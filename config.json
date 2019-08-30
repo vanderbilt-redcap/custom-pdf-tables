@@ -1,0 +1,73 @@
+{
+  "name": "Custom PDF Tables",
+
+  "namespace": "Vanderbilt\\CustomPDFTables",
+
+  "authors": [
+    {
+      "name": "Ryan Moore",
+      "email": "datacore@vanderbilt.edu",
+      "institution": "Vanderbilt University Medical Center"
+    }
+  ],
+
+  "description": "Create custom table for export of REDCap data forms in PDF format.",
+
+  "permissions": [
+    "select_data",
+    "redcap_module_link_check_display",
+    "redcap_data_entry_form"
+  ],
+
+  "links": {
+    "project": [
+      {
+        "name": "Export Custom PDF",
+        "icon": "report",
+        "url": "export_pdf.php",
+        "access": "design"
+      }
+    ]
+  },
+
+  "no-auth-pages":[""],
+
+  "project-settings": [
+    {
+      "key": "piping-list",
+      "name": "Piping Field List",
+      "type": "sub_settings",
+      "repeatable": true,
+      "sub_settings":[
+        {
+          "key": "position",
+          "name": "Table Position on Page",
+          "type": "text",
+          "choices": [
+            {"value":"top", "name":"Top"},
+            {"value":"bottom", "name":"Bottom"}
+          ]
+        },
+        {
+          "key": "form",
+          "name": "Data Entry Form Where Table Appears",
+          "type": "form-list"
+        },
+        {
+          "key": "table-settings",
+          "name": "JSON String Containing Table Settings in Acceptable Format",
+          "type": "textarea"
+        }
+      ]
+    }
+  ],
+
+  "system-settings": [
+  ],
+  "compatibility": {
+    "php-version-min": "5.5.0",
+    "php-version-max": "",
+    "redcap-version-min": "8.0.0",
+    "redcap-version-max": ""
+  }
+}
