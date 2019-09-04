@@ -165,6 +165,143 @@ class CustomPDFTables extends AbstractExternalModule
 
     function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance)
     {
+        /*$testSettings = array(
+            'table_body'=>array(
+                "0"=>array(
+                    'columns'=>
+                        array(
+                            "0"=>array('border'=>'0','value'=>''),
+                            "1"=>array('value'=>'None'),
+                            "2"=>array('value'=>'Minimal'),
+                            "3"=>array('value'=>'Low'),
+                            "4"=>array('value'=>'Moderate'),
+                            "5"=>array('value'=>'Severe')
+                        )
+                ),
+                "1"=>array(
+                    "columns"=>
+                        array(
+                            "0"=>
+                                array("value"=>'Nicotine'),
+                            "1"=>
+                                array("fill_color"=>[136,235,151],"value"=>"if ([tobacco_nicotine1] = '', 'None', if ([tobacco_nicotine1] = 0,[tobacco_nicotine1],''))"),
+                            "2"=>
+                                array("fill_color"=>[39,200,65],"value"=>"N/A"),
+                            "3"=>
+                                array("fill_color"=>[248,255,93],"value"=>"if ([tobacco_nicotine1] = 1,[tobacco_nicotine1],'')"),
+                            "4"=>
+                                array("fill_color"=>[235,179,136],"value"=>"if ([tobacco_nicotine1] = 2,[tobacco_nicotine1],'')"),
+                            "5"=>
+                                array("fill_color"=>[235,136,136],"value"=>"if ([tobacco_nicotine1] > 2,[tobacco_nicotine1],'')")
+                        )
+                ),
+                "2"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Alcohol'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([gendercode2] > 1, if ([auditf_score] >= 0 AND [auditf_score] <= 7,[auditf_score],''), if ([auditm_score] >= 0 AND [auditm_score] <= 7 AND [gendercode2] <> '',[auditm_score],''))"),
+                        "2"=>
+                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
+                        "3"=>
+                            array("fill_color"=>[248,255,93],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 7 AND [auditf_score] < 16,[auditf_score],''), if ([auditm_score] > 7 AND [auditm_score] < 16 AND [gendercode2] <> '',[auditm_score],''))"),
+                        "4"=>
+                            array("fill_color"=>[235,179,136],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 15 AND [auditf_score] < 25,[auditf_score],''), if ([auditm_score] > 15 AND [auditm_score] < 25 AND [gendercode2] <> '',[auditm_score],''))"),
+                        "5"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 24,[auditf_score],''), if ([auditm_score] > 24 AND [gendercode2] <> '',[auditm_score],''))")
+                    )
+                ),
+                "3"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Marijuana'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1, if ([cis_score] < 2, [cis_score], ''),if ([site] != '', if ([marijuana] = 0, [marijuana], ''),''))"),
+                        "2"=>
+                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
+                        "3"=>
+                            array("fill_color"=>[248,255,93],"value"=>"if ([site] = 1, if ([cis_score] > 1 AND [cis_score] < 4, [cis_score], ''),if ([site] != '', if ([marijuana] = 1, [marijuana], ''),''))"),
+                        "4"=>
+                            array("fill_color"=>[235,179,136],"value"=>"if ([site] = 1, if ([cis_score] > 3 AND [cis_score] < 6, [cis_score], ''),if ([site] != '', if ([marijuana] = 2, [marijuana], ''),''))"),
+                        "5"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1, if ([cis_score] > 6, [cis_score], ''),if ([site] != '', if ([marijuana] > 2, [marijuana], ''),''))")
+                    )
+                ),
+                "4"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Drugs'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([dast_score] = 0, [dast_score], '')"),
+                        "2"=>
+                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
+                        "3"=>
+                            array("fill_color"=>[248,255,93],"value"=>"if ([dast_score] > 0 AND [dast_score] < 3, [dast_score], '')"),
+                        "4"=>
+                            array("fill_color"=>[235,179,136],"value"=>"if ([dast_score] > 2 AND [dast_score] < 6, [dast_score], '')"),
+                        "5"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([dast_score] > 5, [dast_score], '')")
+                    )
+                ),
+                "5"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Depression'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1, if ([phq9_score_3] = 0 AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if ([phq9_score_2] = 0 AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
+                        "2"=>
+                            array("fill_color"=>[39,200,65],"value"=>"if ([site] = 1, if (([phq9_score_3] > 0 AND [phq9_score_3] < 5) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 0 AND [phq9_score_2] < 5) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
+                        "3"=>
+                            array("fill_color"=>[248,255,93],"value"=>"if ([site] = 1, if (([phq9_score_3] > 4 AND [phq9_score_3] < 10) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 4 AND [phq9_score_2] < 10) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
+                        "4"=>
+                            array("fill_color"=>[235,179,136],"value"=>"if ([site] = 1, if (([phq9_score_3] > 9 AND [phq9_score_3] < 15) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 9 AND [phq9_score_2] < 15) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
+                        "5"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1, if ([phq9_score_3] > 14 OR [thoughts2] > 0, [phq9_score_3], ''),if ([site] != '', if ([phq9_score_2] > 14 OR [thoughts1] > 0, [phq9_score_2], ''),''))")
+                    )
+                ),
+                "6"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Anxiety'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([site] < 3, if ([gad_score1] = 0, [gad_score1], ''),if ([site] > 2, if ([gad_score2] = 0, [gad_score2], ''),''))"),
+                        "2"=>
+                            array("fill_color"=>[39,200,65],"value"=>"if ([site] < 3, if ([gad_score1] > 0 AND [gad_score1] < 5, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 0 AND [gad_score2] < 5, [gad_score2], ''),''))"),
+                        "3"=>
+                            array("fill_color"=>[248,255,93],"value"=>"if ([site] < 3, if ([gad_score1] > 4 AND [gad_score1] < 10, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 4 AND [gad_score2] < 10, [gad_score2], ''),''))"),
+                        "4"=>
+                            array("fill_color"=>[235,179,136],"value"=>"if ([site] < 3, if ([gad_score1] > 9 AND [gad_score1] < 15, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 9 AND [gad_score2] < 15, [gad_score2], ''),''))"),
+                        "5"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([site] < 3, if ([gad_score1] > 14, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 14, [gad_score2], ''),''))")
+                    )
+                ),
+                "7"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array("value"=>'Suicidality'),
+                        "1"=>
+                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1 AND ([thoughts2] = 0 OR [thoughts2] = ''),[thoughts2], if ([site] != '' AND ([thoughts1] = 0 OR [thoughts1] = ''),[thoughts1], ''))"),
+                        "2"=>
+                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1 AND [thoughts2] > 0,[thoughts2], if ([site] != '' AND [thoughts1] > 0,[thoughts1], ''))","table_width"=>"120")
+                    )
+                ),
+                "8"=>array("columns"=>
+                    array(
+                        "0"=>
+                            array(
+                                "value"=>'Nicotine risk determined by frequency of use; Alcohol risk determined by U.S. Audit score; Marijuana risk determined by frequency of use and sometimes, Cannabis Integrated Screener score; Drug risk determined by DAST-10 score; Depression risk determined by PHQ-9 score; Anxiety risk determined by GAD-7 score; and suicidal thinking measured by PHQ-9 question 9. The score is listed in the corresponding cell.',
+                                "border" => 0,
+                                "table_width"=>250,
+                                "font_orientation"=>"L"
+                            )
+                    )
+                )
+
+            )
+        );
+
+
+        echo json_encode($testSettings);*/
         list($prefix, $version) = ExternalModules::getParseModuleDirectoryPrefixAndVersion($this->getModuleDirectoryName());
         $url = ExternalModules::getUrl($prefix, "download_pdf.php")."&pid=$project_id&id=$record&instrument=$instrument&event_id=$event_id&instance=$repeat_instance";
         $javaString = "";
@@ -180,6 +317,10 @@ class CustomPDFTables extends AbstractExternalModule
             </script>";
         }
         echo $javaString;
+        /*$testCalc = "if ([site] = 1, if (([phq9_01score] > 0 AND [phq9_01score] < 5) AND [thoughts] < 1, [phq9_01score], ''),if ([site] != '', if (([phq9_t_score_2] > 0 AND [phq9_t_score_2] < 5) AND [thoughts_2] < 1, [phq9_t_score_2], ''),''))";
+        $recordData = \Records::getData();
+        $calcVal = $this->getCalculatedData($testCalc,$recordData,$event_id,$project_id,'teen_phq');
+        echo "Calc Val: $calcVal<br/>";*/
         //echo "<a href='$url'>Testing</a>";
     }
 
@@ -260,6 +401,7 @@ class CustomPDFTables extends AbstractExternalModule
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::CELL_BORDERS] = isset($columnData['border']) && is_numeric($columnData['border']) ? $columnData['border'] : $rowSettings[$pdf::CELL_BORDERS];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::FONT_ORIENTATION] = isset($columnData['font_orientation']) ? $columnData['font_orientation'] : $rowSettings[$pdf::FONT_ORIENTATION];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::TABLE_WIDTH_SETTINGS] = isset($columnData[$pdf::TABLE_WIDTH_SETTINGS]) ? $columnData[$pdf::TABLE_WIDTH_SETTINGS] : $rowSettings[$pdf::TABLE_WIDTH_SETTINGS];
+                    //echo "Value is: ".$columnData['value'].", $event_id,$project_id,$instrument<br/>";
                     $tableSettings['table_body']['data'][$row][$column] = $this->getCalculatedData($columnData['value'],$recordData,$event_id,$project_id,$instrument,$repeat_instance);
                 }
             }
@@ -726,8 +868,10 @@ class CustomPDFTables extends AbstractExternalModule
                             $pdf->SetTextColor($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][0],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][1],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][2]);
                             $pdf->SetFont($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_NAME],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_STYLE],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE]);
                             /*echo "I'm printing out the cell for ".htmlspecialchars(json_encode($tableVal))."<br/>";
-                            echo "Width: ".$cellWidth.", Height: ".$maxHeight.", Orient: ".$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION]."<br/>";*/
-                            $pdf->MultiCell($cellWidth,($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1,$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
+                            echo "Width: ".$cellWidth.", Height: ".$maxHeight.", Orient: ".$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION]."<br/>";
+                            echo "Actual height: ".(($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1)."<br/>";*/
+                            $pdf->cMargin = 0;
+                            $pdf->MultiCell($cellWidth,$maxHeight / (substr_count($tableVal,"\n") + 1),$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
 
                             ## Print borders first if needed
                             /*if($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]) {
