@@ -343,7 +343,6 @@ class CustomPDFTables extends AbstractExternalModule
             }
         }
         $project = new \Project($project_id);
-        $recordData = \REDCap::getData($project_id, 'array', array($record), array(), array(), array(), false, false, false);
         $projectMetaData = $project->metadata;
         $projectForms = $project->forms;
 
