@@ -324,7 +324,7 @@ class CustomPDFTables extends AbstractExternalModule
         //echo "<a href='$url'>Testing</a>";
     }
 
-    function processTableSettings($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance=null) {
+    function processTableSettings($recordData, $project_id, $record, $instrument, $event_id, $group_id, $repeat_instance=null) {
         $tablePosition = $this->getProjectSetting('position');
         $tableForm = $this->getProjectSetting('form');
         $settingsString = $this->getProjectSetting('table-settings');
@@ -339,7 +339,7 @@ class CustomPDFTables extends AbstractExternalModule
                 if ($settingsArray === false) {
                     $settingsArray = array();
                 }
-                $combinedSettings[$index]['table-settings'] = $this->parseDefaultSettings($project_id,$record,$event_id,$instrument,$group_id,$repeat_instance,$settingsArray);
+                $combinedSettings[$index]['table-settings'] = $this->parseDefaultSettings($recordData, $project_id,$record,$event_id,$instrument,$group_id,$repeat_instance,$settingsArray);
             }
         }
         $project = new \Project($project_id);
@@ -359,11 +359,11 @@ class CustomPDFTables extends AbstractExternalModule
         return $combinedSettings;
     }
 
-    function parseDefaultSettings($project_id,$record_id,$event_id,$instrument,$group_id,$repeat_instance,$settingsArray) {
+    function parseDefaultSettings($recordData,$project_id,$record_id,$event_id,$instrument,$group_id,$repeat_instance,$settingsArray) {
         $pdf = new \Plugin\PDF_MemImage();
         $tableSettings = array();
 
-        $recordData = \Records::getData();
+        //$recordData = \Records::getData();
         if (isset($settingsArray['header']) && !empty($settingsArray['header'])) {
             $header = $settingsArray['header'];
             $tableSettings['header'][$pdf::HEADER_FONT_SIZE] = $header['font_size'] != "" && is_numeric($header['font_size']) ? $header['font_size'] : 12;
@@ -400,8 +400,9 @@ class CustomPDFTables extends AbstractExternalModule
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::CELL_BORDERS] = isset($columnData['border']) && is_numeric($columnData['border']) ? $columnData['border'] : $rowSettings[$pdf::CELL_BORDERS];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::FONT_ORIENTATION] = isset($columnData['font_orientation']) ? $columnData['font_orientation'] : $rowSettings[$pdf::FONT_ORIENTATION];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::TABLE_WIDTH_SETTINGS] = isset($columnData[$pdf::TABLE_WIDTH_SETTINGS]) ? $columnData[$pdf::TABLE_WIDTH_SETTINGS] : $rowSettings[$pdf::TABLE_WIDTH_SETTINGS];
-                    //echo "Value is: ".$columnData['value'].", $event_id,$project_id,$instrument<br/>";
+                    echo "Value is: ".$columnData['value'].", $event_id,$project_id,$instrument<br/>";
                     $tableSettings['table_body']['data'][$row][$column] = $this->getCalculatedData($columnData['value'],$recordData,$event_id,$project_id,$instrument,$repeat_instance);
+                    echo "Calculated is ".$tableSettings['table_body']['data'][$row][$column]."<br/>";
                 }
             }
         }
