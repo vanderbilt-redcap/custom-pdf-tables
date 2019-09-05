@@ -676,11 +676,16 @@ class CustomPDFTables extends AbstractExternalModule
             }
 
             $currentY += 10;
+
             if ($formMetadata != $subSettings['form']) continue;
             if (isset($subSettings['table-settings']['table_body'])) {
                 $tableSettings = $subSettings['table-settings']['table_body']['settings'][0][0];
                 //$tableData = $subSettings['table-settings']['table_body']['data'];
                 $tableData = $this->fitCustomDatatoWidth($pdf,$subSettings['table-settings']['table_body']['data'],$subSettings['table-settings']['table_body']['settings']);
+                echo "Settings Data: <br/>";
+                echo "<pre>";
+                    print_r($tableData);
+                echo "</pre>";
                 //$tableData = $pdf->fitDataToColumnWidth($subSettings['table-settings']['table_body']['data'],$tableSettings);
 
                     /*echo "TRow:<br/>";
