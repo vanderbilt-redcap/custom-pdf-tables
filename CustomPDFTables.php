@@ -13,61 +13,6 @@ include_once(__DIR__."/Libraries/PDF/FPDF/PDF_MemImage.php");
 
 class CustomPDFTables extends AbstractExternalModule
 {
-
-    /*dark violet	#9400D3	[148,0,211]
-        dark orchid	#9932CC	[153,50,204]
-        medium orchid	#BA55D3	[186,85,211]
-        thistle	#D8BFD8	[216,191,216]
-        plum	#DDA0DD	[221,160,221]
-        violet	#EE82EE	[238,130,238]
-        orchid	#DA70D6	[218,112,214]
-        medium violet red	#C71585	[199,21,133]
-        pale violet red	#DB7093	[219,112,147]
-        deep pink	#FF1493	[255,20,147]
-        hot pink	#FF69B4	[255,105,180]
-        light pink	#FFB6C1	[255,182,193]
-        pink	#FFC0CB	[255,192,203]
-        antique white	#FAEBD7	[250,235,215]
-        beige	#F5F5DC	[245,245,220]
-        bisque	#FFE4C4	[255,228,196]
-        blanched almond	#FFEBCD	[255,235,205]
-        wheat	#F5DEB3	[245,222,179]
-        corn silk	#FFF8DC	[255,248,220]
-        lemon chiffon	#FFFACD	[255,250,205]
-        light golden rod yellow	#FAFAD2	[250,250,210]
-        saddle brown	#8B4513	[139,69,19]
-        sienna	#A0522D	[160,82,45]
-        chocolate	#D2691E	[210,105,30]
-        peru	#CD853F	[205,133,63]
-        sandy brown	#F4A460	[244,164,96]
-        burly wood	#DEB887	[222,184,135]
-        tan	#D2B48C	[210,180,140]
-        rosy brown	#BC8F8F	[188,143,143]
-        moccasin	#FFE4B5	[255,228,181]
-        navajo white	#FFDEAD	[255,222,173]
-        peach puff	#FFDAB9	[255,218,185]
-        misty rose	#FFE4E1	[255,228,225]
-        lavender blush	#FFF0F5	[255,240,245]
-        linen	#FAF0E6	[250,240,230]
-        old lace	#FDF5E6	[253,245,230]
-        papaya whip	#FFEFD5	[255,239,213]
-        sea shell	#FFF5EE	[255,245,238]
-        mint cream	#F5FFFA	[245,255,250]
-        slate gray	#708090	[112,128,144]
-        light slate gray	#778899	[119,136,153]
-        light steel blue	#B0C4DE	[176,196,222]
-        lavender	#E6E6FA	[230,230,250]
-        floral white	#FFFAF0	[255,250,240]
-        alice blue	#F0F8FF	[240,248,255]
-        ghost white	#F8F8FF	[248,248,255]
-        honeydew	#F0FFF0	[240,255,240]
-        ivory	#FFFFF0	[255,255,240]
-        azure	#F0FFFF	[240,255,255]
-        snow	#FFFAFA	[255,250,250]
-        dim gray / dim grey	#696969	[105,105,105]
-        gainsboro	#DCDCDC	[220,220,220]
-        white smoke	#F5F5F5	[245,245,245]*/
-
     const FILL_COLOR = "fill_color";
     public $record_id,$event_arm;
     public $colorConversions = array(
@@ -165,143 +110,6 @@ class CustomPDFTables extends AbstractExternalModule
 
     function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance)
     {
-        /*$testSettings = array(
-            'table_body'=>array(
-                "0"=>array(
-                    'columns'=>
-                        array(
-                            "0"=>array('border'=>'0','value'=>''),
-                            "1"=>array('value'=>'None'),
-                            "2"=>array('value'=>'Minimal'),
-                            "3"=>array('value'=>'Low'),
-                            "4"=>array('value'=>'Moderate'),
-                            "5"=>array('value'=>'Severe')
-                        )
-                ),
-                "1"=>array(
-                    "columns"=>
-                        array(
-                            "0"=>
-                                array("value"=>'Nicotine'),
-                            "1"=>
-                                array("fill_color"=>[136,235,151],"value"=>"if ([tobacco_nicotine1] = '', 'None', if ([tobacco_nicotine1] = 0,[tobacco_nicotine1],''))"),
-                            "2"=>
-                                array("fill_color"=>[39,200,65],"value"=>"N/A"),
-                            "3"=>
-                                array("fill_color"=>[248,255,93],"value"=>"if ([tobacco_nicotine1] = 1,[tobacco_nicotine1],'')"),
-                            "4"=>
-                                array("fill_color"=>[235,179,136],"value"=>"if ([tobacco_nicotine1] = 2,[tobacco_nicotine1],'')"),
-                            "5"=>
-                                array("fill_color"=>[235,136,136],"value"=>"if ([tobacco_nicotine1] > 2,[tobacco_nicotine1],'')")
-                        )
-                ),
-                "2"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Alcohol'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([gendercode2] > 1, if ([auditf_score] >= 0 AND [auditf_score] <= 7,[auditf_score],''), if ([auditm_score] >= 0 AND [auditm_score] <= 7 AND [gendercode2] <> '',[auditm_score],''))"),
-                        "2"=>
-                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
-                        "3"=>
-                            array("fill_color"=>[248,255,93],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 7 AND [auditf_score] < 16,[auditf_score],''), if ([auditm_score] > 7 AND [auditm_score] < 16 AND [gendercode2] <> '',[auditm_score],''))"),
-                        "4"=>
-                            array("fill_color"=>[235,179,136],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 15 AND [auditf_score] < 25,[auditf_score],''), if ([auditm_score] > 15 AND [auditm_score] < 25 AND [gendercode2] <> '',[auditm_score],''))"),
-                        "5"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([gendercode2] > 1, if ([auditf_score] > 24,[auditf_score],''), if ([auditm_score] > 24 AND [gendercode2] <> '',[auditm_score],''))")
-                    )
-                ),
-                "3"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Marijuana'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1, if ([cis_score] < 2, [cis_score], ''),if ([site] != '', if ([marijuana] = 0, [marijuana], ''),''))"),
-                        "2"=>
-                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
-                        "3"=>
-                            array("fill_color"=>[248,255,93],"value"=>"if ([site] = 1, if ([cis_score] > 1 AND [cis_score] < 4, [cis_score], ''),if ([site] != '', if ([marijuana] = 1, [marijuana], ''),''))"),
-                        "4"=>
-                            array("fill_color"=>[235,179,136],"value"=>"if ([site] = 1, if ([cis_score] > 3 AND [cis_score] < 6, [cis_score], ''),if ([site] != '', if ([marijuana] = 2, [marijuana], ''),''))"),
-                        "5"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1, if ([cis_score] > 6, [cis_score], ''),if ([site] != '', if ([marijuana] > 2, [marijuana], ''),''))")
-                    )
-                ),
-                "4"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Drugs'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([dast_score] = 0, [dast_score], '')"),
-                        "2"=>
-                            array("fill_color"=>[39,200,65],"value"=>"N/A"),
-                        "3"=>
-                            array("fill_color"=>[248,255,93],"value"=>"if ([dast_score] > 0 AND [dast_score] < 3, [dast_score], '')"),
-                        "4"=>
-                            array("fill_color"=>[235,179,136],"value"=>"if ([dast_score] > 2 AND [dast_score] < 6, [dast_score], '')"),
-                        "5"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([dast_score] > 5, [dast_score], '')")
-                    )
-                ),
-                "5"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Depression'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1, if ([phq9_score_3] = 0 AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if ([phq9_score_2] = 0 AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
-                        "2"=>
-                            array("fill_color"=>[39,200,65],"value"=>"if ([site] = 1, if (([phq9_score_3] > 0 AND [phq9_score_3] < 5) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 0 AND [phq9_score_2] < 5) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
-                        "3"=>
-                            array("fill_color"=>[248,255,93],"value"=>"if ([site] = 1, if (([phq9_score_3] > 4 AND [phq9_score_3] < 10) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 4 AND [phq9_score_2] < 10) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
-                        "4"=>
-                            array("fill_color"=>[235,179,136],"value"=>"if ([site] = 1, if (([phq9_score_3] > 9 AND [phq9_score_3] < 15) AND [thoughts2] < 1, [phq9_score_3], ''),if ([site] != '', if (([phq9_score_2] > 9 AND [phq9_score_2] < 15) AND [thoughts1] < 1, [phq9_score_2], ''),''))"),
-                        "5"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1, if ([phq9_score_3] > 14 OR [thoughts2] > 0, [phq9_score_3], ''),if ([site] != '', if ([phq9_score_2] > 14 OR [thoughts1] > 0, [phq9_score_2], ''),''))")
-                    )
-                ),
-                "6"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Anxiety'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([site] < 3, if ([gad_score1] = 0, [gad_score1], ''),if ([site] > 2, if ([gad_score2] = 0, [gad_score2], ''),''))"),
-                        "2"=>
-                            array("fill_color"=>[39,200,65],"value"=>"if ([site] < 3, if ([gad_score1] > 0 AND [gad_score1] < 5, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 0 AND [gad_score2] < 5, [gad_score2], ''),''))"),
-                        "3"=>
-                            array("fill_color"=>[248,255,93],"value"=>"if ([site] < 3, if ([gad_score1] > 4 AND [gad_score1] < 10, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 4 AND [gad_score2] < 10, [gad_score2], ''),''))"),
-                        "4"=>
-                            array("fill_color"=>[235,179,136],"value"=>"if ([site] < 3, if ([gad_score1] > 9 AND [gad_score1] < 15, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 9 AND [gad_score2] < 15, [gad_score2], ''),''))"),
-                        "5"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([site] < 3, if ([gad_score1] > 14, [gad_score1], ''),if ([site] > 2, if ([gad_score2] > 14, [gad_score2], ''),''))")
-                    )
-                ),
-                "7"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array("value"=>'Suicidality'),
-                        "1"=>
-                            array("fill_color"=>[136,235,151],"value"=>"if ([site] = 1 AND ([thoughts2] = 0 OR [thoughts2] = ''),[thoughts2], if ([site] != '' AND ([thoughts1] = 0 OR [thoughts1] = ''),[thoughts1], ''))"),
-                        "2"=>
-                            array("fill_color"=>[235,136,136],"value"=>"if ([site] = 1 AND [thoughts2] > 0,[thoughts2], if ([site] != '' AND [thoughts1] > 0,[thoughts1], ''))","table_width"=>"120")
-                    )
-                ),
-                "8"=>array("columns"=>
-                    array(
-                        "0"=>
-                            array(
-                                "value"=>'Nicotine risk determined by frequency of use; Alcohol risk determined by U.S. Audit score; Marijuana risk determined by frequency of use and sometimes, Cannabis Integrated Screener score; Drug risk determined by DAST-10 score; Depression risk determined by PHQ-9 score; Anxiety risk determined by GAD-7 score; and suicidal thinking measured by PHQ-9 question 9. The score is listed in the corresponding cell.',
-                                "border" => 0,
-                                "table_width"=>250,
-                                "font_orientation"=>"L"
-                            )
-                    )
-                )
-
-            )
-        );
-
-
-        echo json_encode($testSettings);*/
         list($prefix, $version) = ExternalModules::getParseModuleDirectoryPrefixAndVersion($this->getModuleDirectoryName());
         $url = ExternalModules::getUrl($prefix, "download_pdf.php")."&pid=$project_id&id=$record&instrument=$instrument&event_id=$event_id&instance=$repeat_instance";
         $javaString = "";
@@ -400,9 +208,9 @@ class CustomPDFTables extends AbstractExternalModule
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::CELL_BORDERS] = isset($columnData['border']) && is_numeric($columnData['border']) ? $columnData['border'] : $rowSettings[$pdf::CELL_BORDERS];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::FONT_ORIENTATION] = isset($columnData['font_orientation']) ? $columnData['font_orientation'] : $rowSettings[$pdf::FONT_ORIENTATION];
                     $tableSettings['table_body']['settings'][$row][$column][$pdf::TABLE_WIDTH_SETTINGS] = isset($columnData[$pdf::TABLE_WIDTH_SETTINGS]) ? $columnData[$pdf::TABLE_WIDTH_SETTINGS] : $rowSettings[$pdf::TABLE_WIDTH_SETTINGS];
-                    echo "Value is: ".$columnData['value'].", $event_id,$project_id,$instrument<br/>";
+                    //echo "Value is: ".$columnData['value'].", $event_id,$project_id,$instrument<br/>";
                     $tableSettings['table_body']['data'][$row][$column] = $this->getCalculatedData($columnData['value'],$recordData,$event_id,$project_id,$instrument,$repeat_instance);
-                    echo "Calculated is ".$tableSettings['table_body']['data'][$row][$column]."<br/>";
+                    //echo "Calculated is ".$tableSettings['table_body']['data'][$row][$column]."<br/>";
                 }
             }
         }
@@ -683,10 +491,7 @@ class CustomPDFTables extends AbstractExternalModule
                 $tableSettings = $subSettings['table-settings']['table_body']['settings'][0][0];
                 //$tableData = $subSettings['table-settings']['table_body']['data'];
                 $tableData = $this->fitCustomDatatoWidth($pdf,$subSettings['table-settings']['table_body']['data'],$subSettings['table-settings']['table_body']['settings']);
-                echo "Settings Data: <br/>";
-                echo "<pre>";
-                    print_r($tableData);
-                echo "</pre>";
+
                 //$tableData = $pdf->fitDataToColumnWidth($subSettings['table-settings']['table_body']['data'],$tableSettings);
 
                     /*echo "TRow:<br/>";
