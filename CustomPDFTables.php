@@ -1187,7 +1187,7 @@ class CustomPDFTables extends AbstractExternalModule
 
             ## Code to try manually inserting line breaks to tables as needed
             $maxWidth = $cellWidth - 2;
-
+echo "String: ".htmlspecialchars(json_encode($tableVal))."<br/>";
             $newString = $tableVal;
             $stringWidth = $pdf->GetStringWidth($newString);
 
