@@ -962,6 +962,7 @@ class CustomPDFTables extends AbstractExternalModule
                     $columnWidth = $tableVal;
                     $tableVal = $tableKey;
                 }
+                $tableVal = str_replace("\r","",$tableVal);
                 $cellWidth = $widthArray[$currentColumn + $columnWidth] - $widthArray[$currentColumn];
 
                 if(is_array($tableSettings[$pdf::NUMBER_DECIMALS])) {
