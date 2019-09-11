@@ -28,6 +28,9 @@ $formTitle = $Proj->forms[$instrument]["menu"];
 $recordData = \REDCap::getData($project_id, 'array', array($record), array(), array($event_id), array(), false, false, false);
 
 $theMeta = $module->processTableSettings($recordData,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+echo "<pre>";
+print_r($theMeta);
+echo "</pre>";
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$recordData[$record],$formMetadata,$fullMetadata,$formTitle,array());
 
