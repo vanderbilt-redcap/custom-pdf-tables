@@ -990,6 +990,7 @@ class CustomPDFTables extends AbstractExternalModule
                 }
                 ## Then print the actual cell text second
 //				error_log("Printing: ".$tableVal);
+                echo "Table: ".htmlspecialchars(json_encode($tableVal))."<br/>";
                 /*echo "Table: ".htmlspecialchars(json_encode($tableVal))."<br/>";
                 echo "Color: <br/>";
                 echo "<pre>";
@@ -1065,6 +1066,7 @@ class CustomPDFTables extends AbstractExternalModule
                     print_r($strings);
                     echo "</pre>";*/
                     foreach ($strings as $index => $newline) {
+                        echo "New line: ".htmlspecialchars(json_encode($newline))."<br/>";
                         if ($newline == "" && (($lastString == "" && $lastString !== null) || $index == count($strings)-1)) {
                             //echo "Skipping ahead on $newline from $lastString<br/>";
                             /*$pdf->Cell($pdf->GetStringWidth(' '), $h, ' ', $border, 0, $align, $fill);
@@ -1104,7 +1106,7 @@ class CustomPDFTables extends AbstractExternalModule
                 }*/
             }
             else {
-                $part['text'] = str_replace("\n"," ",$part['text']);
+                echo "The part text: ".htmlspecialchars(json_encode($part['text']))."<br/>";
                 $pdf->Cell($pdf->GetStringWidth($part['text']), $h, $part['text'], $border, 0, $align, $fill);
                 $currentPointerPosition += $pdf->GetStringWidth($part['text']);
             }
@@ -1187,6 +1189,7 @@ class CustomPDFTables extends AbstractExternalModule
 
             ## Code to try manually inserting line breaks to tables as needed
             $maxWidth = $cellWidth - 2;
+echo "String: ".htmlspecialchars(json_encode($tableVal))."<br/>";
             $newString = $tableVal;
             $stringWidth = $pdf->GetStringWidth($newString);
 
