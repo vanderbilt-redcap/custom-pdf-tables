@@ -990,6 +990,7 @@ class CustomPDFTables extends AbstractExternalModule
                 }
                 ## Then print the actual cell text second
 //				error_log("Printing: ".$tableVal);
+                echo "Table: ".htmlspecialchars(json_encode($tableVal))."<br/>";
                 /*echo "Table: ".htmlspecialchars(json_encode($tableVal))."<br/>";
                 echo "Color: <br/>";
                 echo "<pre>";
