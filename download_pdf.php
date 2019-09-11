@@ -26,11 +26,12 @@ $formMetadata = \REDCap::getDataDictionary($project_id,"array",TRUE,NULL,$instru
 $fullMetadata = \REDCap::getDataDictionary($project_id,"array",TRUE,NULL);
 $formTitle = $Proj->forms[$instrument]["menu"];
 $recordData = \REDCap::getData($project_id, 'array', array($record), array(), array($event_id), array(), false, false, false);
-
-$theMeta = $module->processTableSettings($recordData,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+echo "Record Data: <br/>";
 echo "<pre>";
-print_r($theMeta);
+print_r($recordData);
 echo "</pre>";
+$theMeta = $module->processTableSettings($recordData,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$recordData[$record],$formMetadata,$fullMetadata,$formTitle,array());
 
