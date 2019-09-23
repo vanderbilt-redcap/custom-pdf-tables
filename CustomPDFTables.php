@@ -300,7 +300,9 @@ class CustomPDFTables extends AbstractExternalModule
             \Plugin\PDF_MemImage::FONT_ORIENTATION => ['L','L']];
 
         $currentStyle = array_merge($tableHeader1,$tableBody1);
-
+echo "<pre>";
+print_r($recordData);
+echo "</pre>";
         foreach($recordData as $thisRecordData) {
             if ($currentY == 0) {
                 $currentY = self::addNewPage($pdf);
@@ -354,26 +356,12 @@ class CustomPDFTables extends AbstractExternalModule
                     $colorInfo = $this->colorTextMapping($label);
                     ## Remove HTML tags from field label
                     $label = preg_replace("/\\<.*?\\>/","",$this->br2nl($fieldDetails["field_label"]));
-echo "record data:<br/>";
-echo "<pre>";
-print_r($thisRecordData);
-echo "</pre>";
+
                     ## Replace piping with record values
                     $label = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)(\\])/", function ($matches) use ($thisRecordData,$fullMetaData) {
-                        echo "Matches:<br/>";
-                        echo "<pre>";
-                        print_r($matches);
-                        echo "</pre>";
                         $fieldDetails = $fullMetaData[$matches[2]];
                         $fieldValue = $thisRecordData[$matches[2]];
-                        echo "Field Details: <br/>";
-echo "<pre>";
-print_r($fieldDetails);
-echo "</pre>";
-echo "Field Value: <br/>";
-                        echo "<pre>";
-                        print_r($fieldValue);
-                        echo "</pre>";
+
                         $enum = $fieldDetails["select_choices_or_calculations"];
 
                         if($enum != "" && $fieldDetails['field_type'] !== 'calc') {
