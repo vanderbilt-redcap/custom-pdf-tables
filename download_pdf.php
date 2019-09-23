@@ -32,6 +32,7 @@ $singleRecord = $recordData[$record];
 
 if (isset($singleRecord['repeat_instances'])) {
     $subRecord = $singleRecord['repeat_instances'];
+    $singleRecord = array();
     $singleRecord[$event_id] = $subRecord[$event_id][''][$repeat_instance];
 }
 echo "<pre>";
