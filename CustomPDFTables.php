@@ -428,7 +428,10 @@ class CustomPDFTables extends AbstractExternalModule
                 }
             }
             $tableData[] = $currentTableData;
-
+echo "Table: <br/>";
+echo "<pre>";
+print_r($tableData);
+echo "</pre>";
             foreach($tableData as $thisTable) {
                 $headerArray = [];
                 if($thisTable["header"] != "") {
