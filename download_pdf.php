@@ -35,7 +35,7 @@ if (isset($singleRecord['repeat_instances'])) {
     $singleRecord[$event_id] = $subRecord[$event_id][''][$repeat_instance];
 }
 
-$theMeta = $module->processTableSettings($singleRecord,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
+$theMeta = $module->processTableSettings($recordData,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
 
 
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
