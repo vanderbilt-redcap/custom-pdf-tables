@@ -300,10 +300,7 @@ class CustomPDFTables extends AbstractExternalModule
             \Plugin\PDF_MemImage::FONT_ORIENTATION => ['L','L']];
 
         $currentStyle = array_merge($tableHeader1,$tableBody1);
-        echo "Table: <br/>";
-        echo "<pre>";
-        print_r($recordData);
-        echo "</pre>";
+
         foreach($recordData as $thisRecordData) {
             if ($currentY == 0) {
                 $currentY = self::addNewPage($pdf);
@@ -362,7 +359,13 @@ class CustomPDFTables extends AbstractExternalModule
                     $label = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)(\\])/", function ($matches) use ($thisRecordData,$fullMetaData) {
                         $fieldDetails = $fullMetaData[$matches[2]];
                         $fieldValue = $thisRecordData[$matches[2]];
-
+                        echo "Trying: <br/>";
+echo "<pre>";
+print_r($fieldDetails);
+echo "</pre>";
+                        echo "<pre>";
+                        print_r($fieldValue);
+                        echo "</pre>";
                         $enum = $fieldDetails["select_choices_or_calculations"];
 
                         if($enum != "" && $fieldDetails['field_type'] !== 'calc') {
