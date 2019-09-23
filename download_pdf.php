@@ -29,6 +29,9 @@ $recordData = \REDCap::getData($project_id, 'array', array($record), array(), ar
 
 $theMeta = $module->processTableSettings($recordData,$project_id, $record, $instrument, $event_id, $group_id, $repeat_instance);
 $singleRecord = $recordData[$record];
+echo "<pre>";
+print_r($singleRecord);
+echo "</pre>";
 if (isset($singleRecord['repeat_instances'])) {
     $singleRecord = $singleRecord['repeat_instances'][$event_id][][$repeat_instance];
 }
