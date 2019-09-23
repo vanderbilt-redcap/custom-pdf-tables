@@ -354,7 +354,10 @@ class CustomPDFTables extends AbstractExternalModule
                     $colorInfo = $this->colorTextMapping($label);
                     ## Remove HTML tags from field label
                     $label = preg_replace("/\\<.*?\\>/","",$this->br2nl($fieldDetails["field_label"]));
-
+echo "record data:<br/>";
+echo "<pre>";
+print_r($thisRecordData);
+echo "</pre>";
                     ## Replace piping with record values
                     $label = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)(\\])/", function ($matches) use ($thisRecordData,$fullMetaData) {
                         $fieldDetails = $fullMetaData[$matches[2]];
