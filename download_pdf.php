@@ -33,6 +33,6 @@ if (isset($singleRecord['repeat_instances'])) {
     $singleRecord = $singleRecord['repeat_instances'][$event_id][][$repeat_instance];
 }
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
-$currentY = $module->generateFormForRecord($pdf,$currentY,$recordData[$record],$formMetadata,$fullMetadata,$formTitle,array());
+$currentY = $module->generateFormForRecord($pdf,$currentY,$singleRecord,$formMetadata,$fullMetadata,$formTitle,array());
 
 $pdf->Output("Test.pdf","D");
