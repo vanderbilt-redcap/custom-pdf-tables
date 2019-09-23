@@ -32,9 +32,7 @@ $singleRecord = $recordData[$record];
 echo "<pre>";
 print_r($singleRecord);
 echo "</pre>";
-if (isset($singleRecord['repeat_instances'])) {
-    $singleRecord = $singleRecord['repeat_instances'][$event_id][][$repeat_instance];
-}
+
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$singleRecord,$formMetadata,$fullMetadata,$formTitle,array());
 
