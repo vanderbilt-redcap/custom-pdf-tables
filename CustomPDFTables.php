@@ -360,6 +360,10 @@ print_r($thisRecordData);
 echo "</pre>";
                     ## Replace piping with record values
                     $label = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)(\\])/", function ($matches) use ($thisRecordData,$fullMetaData) {
+                        echo "Matches:<br/>";
+                        echo "<pre>";
+                        print_r($matches);
+                        echo "</pre>";
                         $fieldDetails = $fullMetaData[$matches[2]];
                         $fieldValue = $thisRecordData[$matches[2]];
                         echo "Field Details: <br/>";
