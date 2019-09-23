@@ -31,8 +31,12 @@ $theMeta = $module->processTableSettings($recordData,$project_id, $record, $inst
 $singleRecord = $recordData[$record];
 
 if (isset($singleRecord['repeat_instances'])) {
-    $singleRecord = $singleRecord['repeat_instances'][$event_id][''][$repeat_instance];
+    $subRecord = $singleRecord['repeat_instances'];
+    $singleRecord = $subRecord[$event_id][''][$repeat_instance];
 }
+echo "<pre>";
+print_r($singleRecord);
+echo "</pre>";
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$singleRecord,$formMetadata,$fullMetadata,$formTitle,array());
 
