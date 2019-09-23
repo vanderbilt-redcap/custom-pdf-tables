@@ -359,10 +359,11 @@ class CustomPDFTables extends AbstractExternalModule
                     $label = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)(\\])/", function ($matches) use ($thisRecordData,$fullMetaData) {
                         $fieldDetails = $fullMetaData[$matches[2]];
                         $fieldValue = $thisRecordData[$matches[2]];
-                        echo "Trying: <br/>";
+                        echo "Field Details: <br/>";
 echo "<pre>";
 print_r($fieldDetails);
 echo "</pre>";
+echo "Field Value: <br/>";
                         echo "<pre>";
                         print_r($fieldValue);
                         echo "</pre>";
