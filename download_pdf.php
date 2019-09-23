@@ -34,7 +34,9 @@ if (isset($singleRecord['repeat_instances'])) {
     $subRecord = $singleRecord['repeat_instances'];
     $singleRecord[$event_id] = $subRecord[$event_id][''][$repeat_instance];
 }
-
+echo "<pre>";
+print_r($singleRecord);
+echo "</pre>";
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$singleRecord,$formMetadata,$fullMetadata,$formTitle,array());
 
