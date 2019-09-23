@@ -300,7 +300,10 @@ class CustomPDFTables extends AbstractExternalModule
             \Plugin\PDF_MemImage::FONT_ORIENTATION => ['L','L']];
 
         $currentStyle = array_merge($tableHeader1,$tableBody1);
-
+        echo "Table: <br/>";
+        echo "<pre>";
+        print_r($recordData);
+        echo "</pre>";
         foreach($recordData as $thisRecordData) {
             if ($currentY == 0) {
                 $currentY = self::addNewPage($pdf);
@@ -428,10 +431,7 @@ class CustomPDFTables extends AbstractExternalModule
                 }
             }
             $tableData[] = $currentTableData;
-echo "Table: <br/>";
-echo "<pre>";
-print_r($tableData);
-echo "</pre>";
+
             foreach($tableData as $thisTable) {
                 $headerArray = [];
                 if($thisTable["header"] != "") {
