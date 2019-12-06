@@ -43,4 +43,4 @@ $theMeta = $module->processTableSettings($metaRecord,$project_id, $record, $inst
 $currentY = $module->generateCustomTable($pdf,$currentY,array(),$instrument,$formTitle,$theMeta);
 $currentY = $module->generateFormForRecord($pdf,$currentY,$singleRecord,$formMetadata,$fullMetadata,$formTitle,array());
 
-$pdf->Output("Test.pdf","D");
+$pdf->Output("$instrument-$record ".date("Ymd").".pdf","D");

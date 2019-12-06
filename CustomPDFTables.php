@@ -132,6 +132,24 @@ class CustomPDFTables extends AbstractExternalModule
         //echo "<a href='$url'>Testing</a>";
     }
 
+    function redcap_survey_complete($project_id, $record, $instrument, $event_id, $group_id, $survey_hash, $response_id, $repeat_instance = 1) {
+        list($prefix, $version) = ExternalModules::getParseModuleDirectoryPrefixAndVersion($this->getModuleDirectoryName());
+        $url = ExternalModules::getUrl($prefix, "download_pdf.php")."&pid=$project_id&id=$record&instrument=$instrument&event_id=$event_id&instance=$repeat_instance";
+        $javaString = "";
+        $instrumentList = $this->getProjectSetting('form');
+
+        if (in_array($instrument,$instrumentList)) {
+            echo "<script>
+                jQuery(document).ready(function() {
+                    var customPDFURL = encodeURI('$url');
+                    //console.log(customPDFURL);
+                    jQuery('#surveyacknowledgment').after('<div><button style=\"padding:3px;margin-left:5px;margin-top:5px;\" class=\"jqbuttonmed ui-button ui-corner-all ui-widget\" id=\"customPdfDownload\" onclick=\"window.location.href=\''+customPDFURL+'\'\">Download Custom PDF</button></div>');
+                });
+            </script>";
+        }
+        echo $javaString;
+    }
+
     function processTableSettings($recordData, $project_id, $record, $instrument, $event_id, $group_id, $repeat_instance=null) {
         $tablePosition = $this->getProjectSetting('position');
         $tableForm = $this->getProjectSetting('form');
