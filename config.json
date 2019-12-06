@@ -25,13 +25,14 @@
       {
         "name": "Export Custom PDF",
         "icon": "report",
-        "url": "export_pdf.php",
-        "access": "design"
+        "url": "download_pdf.php?NOAUTH"
       }
     ]
   },
 
-  "no-auth-pages":[""],
+  "no-auth-pages":[
+    "download_pdf.php"
+  ],
 
   "project-settings": [
     {
