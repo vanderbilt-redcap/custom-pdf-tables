@@ -1,7 +1,6 @@
 <?php
-include_once(__DIR__."/Libraries/PDF/FPDF/PDF_MemImage.php");
 
-define("NOAUTH", true);
+include_once(__DIR__."/Libraries/PDF/FPDF/PDF_MemImage.php");
 
 global $user_rights;
 $project_id = $_GET['pid'];
