@@ -157,6 +157,7 @@ class CustomPDFTables extends AbstractExternalModule
         $combinedSettings = array();
 
         foreach ($tableForm as $index => $form) {
+            if ($form != $instrument) continue;
             $combinedSettings[$index]['form'] = $form;
             $combinedSettings[$index]['position'] = $tablePosition[$index];
             if ($settingsString[$index] != "") {
@@ -201,9 +202,16 @@ class CustomPDFTables extends AbstractExternalModule
             $tableSettings['header'][$pdf::HEADER_FONT_STYLE] = preg_match('/^[BIU]++$/',$header['font_style']) ? $header['font_style'] : "B";
             $tableSettings['header'][$pdf::HEADER_BORDER] = $header['border'] != "" && is_numeric($header['border']) ? $header['border'] : 1;
         }
+
         if (isset($settingsArray['table_body']) && isset($settingsArray['table_body'])) {
             $rowSettings = array();
             foreach ($settingsArray['table_body'] as $row => $rowData) {
+                if ($rowData['display'] != "") {
+                    $calcResult = $this->getCalculatedData($rowData['display'],$recordData,$event_id,$project_id,$instrument,$repeat_instance);
+                    if ($calcResult !="1") {
+                        continue;
+                    }
+                }
                 $rowSettings[$pdf::FONT_NAME] = isset($rowData['font_name']) && $rowData['font_name'] != "" ? $rowData['font_name'] : "DejaVu";
                 $rowSettings[$pdf::FONT_SIZE] = $rowData['font_size'] != "" && is_numeric($rowData['font_size']) ? $rowData['font_size'] : 10;
                 $rowSettings[$this::FILL_COLOR] = isset($rowData[$this::FILL_COLOR]) ? $rowData[$this::FILL_COLOR] : [255,255,255];
@@ -273,6 +281,7 @@ class CustomPDFTables extends AbstractExternalModule
             echo "</pre>";*/
             foreach ($recordData as $record => &$this_record_data1) {
                 $calculatedCalcVal = \LogicTester::evaluateCondition(null, $this_record_data1, $funcName, $thisInstanceArgMap, null);
+                //echo "The calc value: $calculatedCalcVal<br/>";
                 foreach (parseEnum(strip_tags(label_decode($Proj->metadata[$thisInstanceArgMap[count($thisInstanceArgMap) - 1][1]]['element_enum']))) as $this_code => $this_choice) {
                     if ($calculatedCalcVal === $this_code) {
                         $calculatedCalcVal = $this_choice;
@@ -330,6 +339,7 @@ class CustomPDFTables extends AbstractExternalModule
             $tableData = [];
             $colorMapping = [];
             $currentTableData = ["header" => "","rows" => []];
+
             foreach($formMetadata as $fieldName => $fieldDetails) {
                 $sectionHeader = preg_replace("/\\<.*?\\>/","",$fieldDetails["section_header"]);
                 if($sectionHeader) {
@@ -493,6 +503,10 @@ class CustomPDFTables extends AbstractExternalModule
         $overflowFunction = "addNewPage";
         $overflowParameters = [$pdf];
         $x = 10;
+        /*echo "Table options:<br/>";
+        echo "<pre>";
+        print_r($tableOptions);
+        echo "</pre>";*/
         foreach ($tableOptions as $index => $subSettings) {
             $currentX = 10;
             $currentColumn = 0;
@@ -508,8 +522,13 @@ class CustomPDFTables extends AbstractExternalModule
             if (isset($subSettings['table-settings']['table_body'])) {
                 $tableSettings = $subSettings['table-settings']['table_body']['settings'][0][0];
                 //$tableData = $subSettings['table-settings']['table_body']['data'];
+                /*echo "<pre>";
+                print_r($subSettings['table-settings']['table_body']['data']);
+                echo "</pre>";*/
                 $tableData = $this->fitCustomDatatoWidth($pdf,$subSettings['table-settings']['table_body']['data'],$subSettings['table-settings']['table_body']['settings']);
-
+                /*echo "<pre>";
+                print_r($tableData);
+                echo "</pre>";*/
                 //$tableData = $pdf->fitDataToColumnWidth($subSettings['table-settings']['table_body']['data'],$tableSettings);
 
                     /*echo "TRow:<br/>";
@@ -527,6 +546,7 @@ class CustomPDFTables extends AbstractExternalModule
                     echo "</pre>";*/
                     for($i = 0; ($i < count($tableData) || count($rowToAdd) > 0); $i++) {
                         $alignmentArray = [];
+                        if (empty($tableData[$i]) && count($rowToAdd) <= 0) continue;
 
                         for($currentColumn = 0; $currentColumn < max(count($tableData[$i])); $currentColumn++) {
                             $alignmentArray[] = $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn] == "" ? 'J' : $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn];
