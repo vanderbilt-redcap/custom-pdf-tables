@@ -544,7 +544,8 @@ class CustomPDFTables extends AbstractExternalModule
                     echo "<pre>";
                     print_r($tableData);
                     echo "</pre>";*/
-                    for($i = 0; ($i < count($tableData) || count($rowToAdd) > 0); $i++) {
+
+                    for($i = 0; ($i <= max(array_keys($tableData)) || count($rowToAdd) > 0); $i++) {
                         $alignmentArray = [];
                         if (empty($tableData[$i]) && count($rowToAdd) <= 0) continue;
 
@@ -720,7 +721,6 @@ class CustomPDFTables extends AbstractExternalModule
                             echo "Actual height: ".(($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1)."<br/>";*/
                             $pdf->cMargin = 0;
                             $pdf->MultiCell($cellWidth,$maxHeight / (substr_count($tableVal,"\n") + 1),$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
-
                             ## Print borders first if needed
                             /*if($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]) {
                                 $pdf->MultiCell($cellWidth,$maxHeight,"",$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]);
@@ -895,7 +895,7 @@ class CustomPDFTables extends AbstractExternalModule
         echo "<pre>";
         print_r($colorData);
         echo "</pre>";*/
-        for($i = 0; ($i < count($tableData) || count($rowToAdd) > 0); $i++) {
+        for($i = 0; ($i <= max(array_keys($tableData)) || count($rowToAdd) > 0); $i++) {
             ## Sometimes new rows will be added in order to wrap cells onto multiple pages
             if(count($rowToAdd) > 0) {
 //				error_log("Row to Add at $currentY: ".implode("||",$rowToAdd));
