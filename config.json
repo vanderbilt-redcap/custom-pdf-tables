@@ -62,7 +62,7 @@
         },
         {
           "key": "user-download",
-          "name": "User Role Who Can Download PDF",
+          "name": "User Role Who Can Download PDF (all roles can if not specified)",
           "type": "user-role-list"
         }
       ]
