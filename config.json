@@ -59,6 +59,11 @@
           "key": "table-settings",
           "name": "JSON String Containing Table Settings in Acceptable Format",
           "type": "textarea"
+        },
+        {
+          "key": "user-download",
+          "name": "User Role Who Can Download PDF",
+          "type": "user-role-list"
         }
       ]
     }

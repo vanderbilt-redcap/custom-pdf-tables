@@ -110,12 +110,17 @@ class CustomPDFTables extends AbstractExternalModule
 
     function redcap_data_entry_form($project_id, $record, $instrument, $event_id, $group_id, $repeat_instance)
     {
+        global $user_rights;
+
         list($prefix, $version) = ExternalModules::getParseModuleDirectoryPrefixAndVersion($this->getModuleDirectoryName());
         $url = ExternalModules::getUrl($prefix, "download_pdf.php")."&pid=$project_id&id=$record&instrument=$instrument&event_id=$event_id&instance=$repeat_instance";
         $javaString = "";
         $instrumentList = $this->getProjectSetting('form');
+        $usersDisplay = $this->getProjectSetting('user-download');
 
-        if (in_array($instrument,$instrumentList)) {
+        $instrumentIndex = array_search($instrument,$instrumentList);
+
+        if (is_numeric($instrumentIndex) && (!isset($usersDisplay[$instrumentIndex]) || $usersDisplay[$instrumentIndex] == $user_rights['role_id'] || SUPER_USER)) {
             echo "<script>
                 jQuery(document).ready(function() {
                     var customPDFURL = encodeURI('$url');
