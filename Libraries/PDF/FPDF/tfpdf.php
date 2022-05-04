@@ -1,5 +1,5 @@
 <?php
-namespace plugin;
+
 /*******************************************************************************
 * tFPDF (based on FPDF 1.7)                                                    *
 *                                                                              *
@@ -110,10 +110,10 @@ function __construct($orientation='P', $unit='mm', $size='A4')
 	{
 		$this->fontpath = FPDF_FONTPATH;
 		if(substr($this->fontpath,-1)!='/' && substr($this->fontpath,-1)!='\\')
-			$this->fontpath .= '/';
+			$this->fontpath .= '\\';
 	}
-	elseif(is_dir(dirname(__FILE__).'/font'))
-		$this->fontpath = dirname(__FILE__).'/font/';
+	elseif(is_dir(dirname(__FILE__).'\\font'))
+		$this->fontpath = dirname(__FILE__).'\\font\\';
 	else
 		$this->fontpath = '';
 	// Core fonts
@@ -495,8 +495,8 @@ function AddFont($family, $style='', $file='', $uni=false)
 
 	if ($uni) {
 		if (defined("_SYSTEM_TTFONTS") && file_exists(_SYSTEM_TTFONTS.$file )) { $ttffilename = _SYSTEM_TTFONTS.$file ; }
-		else { $ttffilename = $this->_getfontpath().'unifont/'.$file ; }
-		$unifilename = $this->_getfontpath().'unifont/'.strtolower(substr($file ,0,(strpos($file ,'.'))));
+		else { $ttffilename = $this->_getfontpath().'unifont\\'.$file ; }
+		$unifilename = $this->_getfontpath().'unifont\\'.strtolower(substr($file ,0,(strpos($file ,'.'))));
 		$name = '';
 		$originalsize = 0;
 		$ttfstat = stat($ttffilename);
@@ -505,7 +505,7 @@ function AddFont($family, $style='', $file='', $uni=false)
 		}
 		if (!isset($type) ||  !isset($name) || $originalsize != $ttfstat['size']) {
 			$ttffile = $ttffilename;
-			require_once($this->_getfontpath().'unifont/ttfonts.php');
+			require_once($this->_getfontpath().'unifont\\ttfonts.php');
 			$ttf = new TTFontFile();
 			$ttf->getMetrics($ttffile);
 			$cw = $ttf->charWidths;
@@ -1257,7 +1257,7 @@ function _dochecks()
 	if(ini_get('mbstring.func_overload') & 2)
 		$this->Error('mbstring overloading must be disabled');
 	// Ensure runtime magic quotes are disabled
-	if(get_magic_quotes_runtime())
+	if(function_exists("get_magic_quotes_runtime()") && get_magic_quotes_runtime())
 		@set_magic_quotes_runtime(0);
 }
 
@@ -1848,8 +1848,9 @@ function _putfonts()
 		// TrueType embedded SUBSETS or FULL
 		else if ($type=='TTF') {
 			$this->fonts[$k]['n']=$this->n+1;
-			require_once($this->_getfontpath().'unifont/ttfonts.php');
-			$ttf = new TTFontFile();
+
+			require_once($this->_getfontpath().'unifont\\ttfonts.php');
+			$ttf = new \TTFontFile();
 			$fontname = 'MPDFAA'.'+'.$font['name'];
 			$subset = $font['subset'];
 			unset($subset[0]);

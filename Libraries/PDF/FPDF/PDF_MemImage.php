@@ -1,5 +1,4 @@
 <?php
-namespace Plugin;
 
 use DateTimeRC;
 use System;
@@ -48,7 +47,7 @@ class PDF_MemImage extends tFPDF
 			stream_wrapper_unregister("var");
 		}
 		// Register var stream protocol
-		stream_wrapper_register('var', 'VariableStream');
+		stream_wrapper_register('var', 'Vanderbilt\CustomPDFTables\VariableStream');
 	}
 
 	function MemImage($data, $x=null, $y=null, $w=0, $h=0, $link='')
@@ -316,6 +315,7 @@ class PDF_MemImage extends tFPDF
 		$tableSettings = $this->setSettingDefaults($tableSettings);
 
 		## Replace tabs with spaces so they show up correctly
+        if (!is_array($tableData[0])) $tableData[0] = array();
 		foreach($tableData as $column => $tableVal) {
 			$tableData[$column] = str_replace("\t","    ",$tableVal);
 		}

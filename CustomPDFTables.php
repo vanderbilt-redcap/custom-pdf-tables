@@ -6,7 +6,7 @@ use DateTimeRC;
 use ExternalModules\AbstractExternalModule;
 use ExternalModules\ExternalModules;
 use LogicTester;
-use Plugin\PDF_MemImage;
+use PDF_MemImage;
 use System;
 
 include_once(__DIR__."/Libraries/PDF/FPDF/PDF_MemImage.php");
@@ -178,7 +178,7 @@ class CustomPDFTables extends AbstractExternalModule
         $projectMetaData = $project->metadata;
         $projectForms = $project->forms;
 
-        $pdf = new \Plugin\PDF_MemImage();
+        $pdf = new PDF_MemImage();
 
         foreach ($projectForms as $formName => $formData) {
             $formMeta = array();
@@ -192,7 +192,7 @@ class CustomPDFTables extends AbstractExternalModule
     }
 
     function parseDefaultSettings($recordData,$project_id,$record_id,$event_id,$instrument,$group_id,$repeat_instance,$settingsArray) {
-        $pdf = new \Plugin\PDF_MemImage();
+        $pdf = new PDF_MemImage();
         $tableSettings = array();
 
         //$recordData = \Records::getData();
@@ -315,21 +315,21 @@ class CustomPDFTables extends AbstractExternalModule
     }
 
     public function generateFormForRecord(PDF_MemImage &$pdf,$currentY,$recordData,$formMetadata,$fullMetaData,$formTitle,$tableSettings) {
-        //$pdf = new \Plugin\PDF_MemImage();
+        //$pdf = new PDF_MemImage();
         $pdf->SetAutoPageBreak(false);
 
-        $headerFont = [\Plugin\PDF_MemImage::FONT_SIZE => 12,\Plugin\PDF_MemImage::FONT_COLOR => [127,0,0],\Plugin\PDF_MemImage::FONT_STYLE => "B",
-            \Plugin\PDF_MemImage::FONT_NAME => "DejaVu", \Plugin\PDF_MemImage::FONT_ALIGN => 'C'];
+        $headerFont = [PDF_MemImage::FONT_SIZE => 12,PDF_MemImage::FONT_COLOR => [127,0,0],PDF_MemImage::FONT_STYLE => "B",
+            PDF_MemImage::FONT_NAME => "DejaVu", PDF_MemImage::FONT_ALIGN => 'C'];
 
-        $tableHeader1 = [\Plugin\PDF_MemImage::HEADER_FONT_SIZE => 12,\Plugin\PDF_MemImage::HEADER_FILL_COLOR => [219,229,241],
-            \Plugin\PDF_MemImage::FONT_STYLE => "B", \Plugin\PDF_MemImage::FONT_NAME => "DejaVu",
-            \Plugin\PDF_MemImage::HEADER_ALIGN => 'L', \Plugin\PDF_MemImage::HEADER_TEXT_COLOR => [0,0,0],
-            \Plugin\PDF_MemImage::TABLE_WIDTH_SETTINGS => [70,120],
-            \Plugin\PDF_MemImage::HEADER_PADDING => 0];
+        $tableHeader1 = [PDF_MemImage::HEADER_FONT_SIZE => 12,PDF_MemImage::HEADER_FILL_COLOR => [219,229,241],
+            PDF_MemImage::FONT_STYLE => "B", PDF_MemImage::FONT_NAME => "DejaVu",
+            PDF_MemImage::HEADER_ALIGN => 'L', PDF_MemImage::HEADER_TEXT_COLOR => [0,0,0],
+            PDF_MemImage::TABLE_WIDTH_SETTINGS => [70,120],
+            PDF_MemImage::HEADER_PADDING => 0];
 
-        $tableBody1 = [\Plugin\PDF_MemImage::FONT_SIZE => 9,\Plugin\PDF_MemImage::FONT_COLOR => [0,0,0],\Plugin\PDF_MemImage::FONT_STYLE => "",
-            \Plugin\PDF_MemImage::FONT_NAME => "DejaVu", \Plugin\PDF_MemImage::FONT_ALIGN => 'L',\Plugin\PDF_MemImage::TABLE_WIDTH_SETTINGS => [70,120],
-            \Plugin\PDF_MemImage::FONT_ORIENTATION => ['L','L']];
+        $tableBody1 = [PDF_MemImage::FONT_SIZE => 9,PDF_MemImage::FONT_COLOR => [0,0,0],PDF_MemImage::FONT_STYLE => "",
+            PDF_MemImage::FONT_NAME => "DejaVu", PDF_MemImage::FONT_ALIGN => 'L',PDF_MemImage::TABLE_WIDTH_SETTINGS => [70,120],
+            PDF_MemImage::FONT_ORIENTATION => ['L','L']];
 
         $currentStyle = array_merge($tableHeader1,$tableBody1);
 
@@ -490,10 +490,10 @@ class CustomPDFTables extends AbstractExternalModule
                 print_r($thisTable['rows']);
                 echo "</pre>";*/
                 if (array_filter($thisTable['colors'])) {
-                    $currentY = $this->printColorTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Plugin\\PDF_MemImage::addNewPage", [$pdf], $thisTable['colors']);
+                    $currentY = $this->printColorTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf], $thisTable['colors']);
                 }
                 else {
-                    $currentY = $pdf->printTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Plugin\\PDF_MemImage::addNewPage", [$pdf]);
+                    $currentY = $pdf->printTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf]);
                 }
             }
         }
@@ -503,7 +503,7 @@ class CustomPDFTables extends AbstractExternalModule
     }
 
     public function generateCustomTable(PDF_MemImage &$pdf,$currentY,$recordData,$formMetadata,$formTitle,$tableOptions) {
-        //$pdf = new \Plugin\PDF_MemImage();
+        //$pdf = new PDF_MemImage();
         $pdf->SetAutoPageBreak(false);
         $overflowFunction = "addNewPage";
         $overflowParameters = [$pdf];
@@ -531,6 +531,7 @@ class CustomPDFTables extends AbstractExternalModule
                 print_r($subSettings['table-settings']['table_body']['data']);
                 echo "</pre>";*/
                 $tableData = $this->fitCustomDatatoWidth($pdf,$subSettings['table-settings']['table_body']['data'],$subSettings['table-settings']['table_body']['settings']);
+                if (!is_array($tableData)) $tableData = array($tableData);
                 /*echo "<pre>";
                 print_r($tableData);
                 echo "</pre>";*/
@@ -552,10 +553,12 @@ class CustomPDFTables extends AbstractExternalModule
 
                     for($i = 0; ($i <= max(array_keys($tableData)) || count($rowToAdd) > 0); $i++) {
                         $alignmentArray = [];
-                        if (empty($tableData[$i]) && count($rowToAdd) <= 0) continue;
+                        if ((!is_array($tableData[$i]) || empty($tableData[$i])) && count($rowToAdd) <= 0) continue;
 
-                        for($currentColumn = 0; $currentColumn < max(count($tableData[$i])); $currentColumn++) {
-                            $alignmentArray[] = $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn] == "" ? 'J' : $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn];
+                        if (is_array($tableData[$i])) {
+                            for ($currentColumn = 0; $currentColumn < max(array(count($tableData[$i]))); $currentColumn++) {
+                                $alignmentArray[] = $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn] == "" ? 'J' : $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn];
+                            }
                         }
                         ## Sometimes new rows will be added in order to wrap cells onto multiple pages
                         if(count($rowToAdd) > 0) {

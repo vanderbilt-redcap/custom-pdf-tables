@@ -1,5 +1,6 @@
 <?php
 
+namespace Vanderbilt\CustomPDFTables;
 // Stream handler to read from global variables
 class VariableStream
 {

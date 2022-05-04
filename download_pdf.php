@@ -25,7 +25,7 @@ if (is_numeric($instrumentIndex) && (!isset($usersDisplay[$instrumentIndex]) || 
         }
     }
 
-    $pdf = new \Plugin\PDF_MemImage();
+    $pdf = new PDF_MemImage();
     $pdf->AliasNbPages();
     $currentY = 0;
     $formMetadata = \REDCap::getDataDictionary($project_id, "array", TRUE, NULL, $instrument);
