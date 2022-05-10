@@ -3,7 +3,12 @@
 use DateTimeRC;
 use System;
 
-require_once('tfpdf.php');
+if (!class_exists('tFPDF')) {
+    require_once(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . join(DIRECTORY_SEPARATOR, ['vendor', 'setasign', 'tfpdf', 'font', 'unifont', 'ttfonts.php']));
+}
+if (!class_exists('tFPDF')) {
+    require_once(dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR . join(DIRECTORY_SEPARATOR, ['vendor', 'setasign', 'tfpdf', 'tfpdf.php']));
+}
 require_once('VariableStream.php');
 
 class PDF_MemImage extends tFPDF
@@ -581,8 +586,23 @@ echo "</pre>";*/
 			$this->Line( $x, $y, $x + $width, $y + $height);
 			$this->Line( $x, $y + $height, $x + $width, $y);
 		}
-
 	}
+
+    function getLeftMargin() {
+        return $this->lMargin;
+    }
+
+    function getRightMargin() {
+        return $this->rMargin;
+    }
+
+    function getCellMargin() {
+        return $this->cMargin;
+    }
+
+    function setCellMargin($margin) {
+        $this->cMargin = $margin;
+    }
 
     function addNewPage(PDF_MemImage $pdf) {
         global $user_rights;

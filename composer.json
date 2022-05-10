@@ -1,0 +1,12 @@
+{
+  "name": "vendor_name/vanderbilt_custom-pdf-tables_v1.0",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+
+  ],
+  "require": {
+    "setasign/tfpdf": "1.32"
+  }
+}

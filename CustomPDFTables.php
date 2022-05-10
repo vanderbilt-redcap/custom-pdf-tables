@@ -470,7 +470,7 @@ class CustomPDFTables extends AbstractExternalModule
 
                 //			$currentY = $pdf->printTableIfRoom(10,$currentY + 5,$headerArray,$thisTable["rows"],$currentStyle);
 
-                if(($currentY + 20) > $pdf->h) {
+                if(($currentY + 20) > $pdf->GetPageHeight()) {
                     $currentY = -5 + self::addNewPage($pdf);
                 }
                 /*echo "Header array:<br/>";
@@ -580,7 +580,7 @@ class CustomPDFTables extends AbstractExternalModule
                                 }
                             }
                             else {
-                                if($pdf->h > 220) {
+                                if($pdf->GetPageHeight() > 220) {
                                     //$pdf->AddPage("P", "A4");
                                     self::addNewPage($pdf);
                                 }
@@ -638,9 +638,9 @@ class CustomPDFTables extends AbstractExternalModule
                         $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
                         $widthArray = $pdf->getColumnWidths($tableRow,$tableSettings);
 
-//			error_log("Need to wrap? $currentY $maxHeight ~ ".$tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT]." > ".($pdf->h - 10)."");
+//			error_log("Need to wrap? $currentY $maxHeight ~ ".$tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT]." > ".($pdf->GetPageHeight() - 10)."");
                         ## If this row will exceed the remaining height in the page, but there's enough room to start the table, split the current row
-                        if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->h - $currentY) && ($currentY + $maxHeight) > ($pdf->h - 10)) {
+                        if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->GetPageHeight() - $currentY) && ($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
 //				error_log("Splitting this thing");
 
                             $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
@@ -648,7 +648,7 @@ class CustomPDFTables extends AbstractExternalModule
 
                         ## If there's not enough room to print even part of this row, create new page and print it there.
                         ## This will wrap onto another page if there still isn't enough room
-                        if(($currentY + $maxHeight) > ($pdf->h - 10)) {
+                        if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
 //				error_log("Wrapping");
                             $currentY = "";
                             if($overflowFunction) {
@@ -661,7 +661,7 @@ class CustomPDFTables extends AbstractExternalModule
                                 }
                             }
                             else {
-                                if($pdf->h > 220) {
+                                if($pdf->GetPageHeight() > 220) {
                                     //$pdf->AddPage("P", "A4");
                                     self::addNewPage($pdf);
                                 }
@@ -679,8 +679,8 @@ class CustomPDFTables extends AbstractExternalModule
                             $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
 
                             ## Check if this single cell will overflow and attempt to wrap the text to another page
-                            if(($currentY + $maxHeight) > ($pdf->h - 10)) {
-                                $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->h - 10 - $currentY));
+                            if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
+                                $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->GetPageHeight() - 10 - $currentY));
                                 $tableRow = $splitRows[0];
                                 $rowToAdd = $splitRows[1];
                                 $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
@@ -727,7 +727,7 @@ class CustomPDFTables extends AbstractExternalModule
                             /*echo "I'm printing out the cell for ".htmlspecialchars(json_encode($tableVal))."<br/>";
                             echo "Width: ".$cellWidth.", Height: ".$maxHeight.", Orient: ".$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION]."<br/>";
                             echo "Actual height: ".(($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1)."<br/>";*/
-                            $pdf->cMargin = 0;
+                            $pdf->setCellMargin(0);
                             $pdf->MultiCell($cellWidth,$maxHeight / (substr_count($tableVal,"\n") + 1),$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
                             ## Print borders first if needed
                             /*if($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]) {
@@ -776,8 +776,9 @@ class CustomPDFTables extends AbstractExternalModule
         return call_user_func_array($logicCode, array());
     }
 
-    function addNewPage(PDF_MemImage $pdf) {
+    public static function addNewPage(PDF_MemImage $pdf) {
         global $Proj;
+        $module = new CustomPDFTables();
         //echo "Adding a new page<br/>";
         $pdf->AddPage("P", "A4");
         $pdf->SetY(-5);
@@ -795,7 +796,7 @@ class CustomPDFTables extends AbstractExternalModule
         $pdf->Cell(0,0,'Confidential',0,1,'L');
         $pdf->Cell(0,5,'Page '.$pdf->PageNo().($GLOBALS['project_encoding'] == 'chinese_utf8' ? '' : ' of {nb}'),0,1,'R');
         $pdf->SetFont('DejaVu','B',8);
-        $pdf->Cell(0,2,"Record ID ".$this->record_id." (".$this->event_arm.")",0,1,'R');
+        $pdf->Cell(0,2,"Record ID ".$module->record_id." (".$module->event_arm.")",0,1,'R');
         $pdf->image(APP_PATH_DOCROOT . "Resources/images/"."redcap-logo-small.png",176, 289, 24, 7);
         ## Return the y coordinate to start
         return 15;
@@ -924,7 +925,7 @@ class CustomPDFTables extends AbstractExternalModule
                     }
                 }
                 else {
-                    if($pdf->h > 220) {
+                    if($pdf->GetPageHeight() > 220) {
                         $pdf->AddPage("P", "A4");
                     }
                     else {
@@ -946,11 +947,11 @@ class CustomPDFTables extends AbstractExternalModule
             $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
             $widthArray = $pdf->getColumnWidths($tableRow,$tableSettings);
 
-//			error_log("Need to wrap? $currentY $maxHeight ~ ".$tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT]." > ".($pdf->h - 10)."");
+//			error_log("Need to wrap? $currentY $maxHeight ~ ".$tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT]." > ".($pdf->GetPageHeight() - 10)."");
             ## If this row will exceed the remaining height in the page, but there's enough room to start the table, split the current row
-            if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->h - $currentY) && ($currentY + $maxHeight) > ($pdf->h - 10)) {
+            if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->GetPageHeight() - $currentY) && ($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
 //				error_log("Splitting this thing");
-                $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->h - 10 - $currentY));
+                $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->GetPageHeight() - 10 - $currentY));
                 $tableRow = $splitRows[0];
                 $rowToAdd = $splitRows[1];
                 $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
@@ -958,7 +959,7 @@ class CustomPDFTables extends AbstractExternalModule
 
             ## If there's not enough room to print even part of this row, create new page and print it there.
             ## This will wrap onto another page if there still isn't enough room
-            if(($currentY + $maxHeight) > ($pdf->h - 10)) {
+            if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
 //				error_log("Wrapping");
                 $currentY = "";
                 if($overflowFunction) {
@@ -971,7 +972,7 @@ class CustomPDFTables extends AbstractExternalModule
                     }
                 }
                 else {
-                    if($pdf->h > 220) {
+                    if($pdf->GetPageHeight() > 220) {
                         $pdf->AddPage("P", "A4");
                     }
                     else {
@@ -987,8 +988,8 @@ class CustomPDFTables extends AbstractExternalModule
                 $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
 
                 ## Check if this single cell will overflow and attempt to wrap the text to another page
-                if(($currentY + $maxHeight) > ($pdf->h - 10)) {
-                    $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->h - 10 - $currentY));
+                if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
+                    $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->GetPageHeight() - 10 - $currentY));
                     $tableRow = $splitRows[0];
                     $rowToAdd = $splitRows[1];
                     $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
@@ -1080,7 +1081,7 @@ class CustomPDFTables extends AbstractExternalModule
 
     function cellMultiColor(PDF_MemImage $pdf, $tableSettings, $stringParts, $border=0, $align='J', $fill=false)
     {
-        $currentPointerPosition = $pdf->lMargin;
+        $currentPointerPosition = $pdf->getLeftMargin();
         $defaultColor = $tableSettings[$pdf::FONT_COLOR];
         $h = $tableSettings[$pdf::FONT_SIZE] / 2;
         foreach ($stringParts as $part) {
@@ -1103,8 +1104,8 @@ class CustomPDFTables extends AbstractExternalModule
                 echo "</pre>";*/
                 if ($part['text'] == "\n") {
                     $pdf->Cell(0, $h, '', $border, 1, $align, $fill);
-                    $pdf->SetX($pdf->lMargin);
-                    $currentPointerPosition = $pdf->lMargin;
+                    $pdf->SetX($pdf->getLeftMargin());
+                    $currentPointerPosition = $pdf->getLeftMargin();
                 }
                 else {
                     $lastString = null;
@@ -1121,7 +1122,7 @@ class CustomPDFTables extends AbstractExternalModule
                         }
                         if ($newline == "") {
                             $pdf->Cell(0, $h, '', $border, 2, $align, $fill);
-                            $currentPointerPosition = $pdf->lMargin;
+                            $currentPointerPosition = $pdf->getLeftMargin();
                         }
                         elseif ($index == count($strings)-1) {
                             $pdf->Cell($pdf->GetStringWidth($newline), $h, $newline, $border, 0, $align, $fill);
@@ -1129,7 +1130,7 @@ class CustomPDFTables extends AbstractExternalModule
                         }
                         else {
                             $pdf->Cell($pdf->GetStringWidth($newline), $h, $newline, $border, 2, $align, $fill);
-                            $currentPointerPosition = $pdf->lMargin;
+                            $currentPointerPosition = $pdf->getLeftMargin();
                         }
                         //echo "New: ".htmlspecialchars(json_encode($newline))."<br/>";
                         $lastString = $newline;
@@ -1139,8 +1140,8 @@ class CustomPDFTables extends AbstractExternalModule
                 /*if (strpos($part['text'],"\n") == 0) {
                     $part['text'] = str_replace("\n", "", $part['text']);
                     $pdf->Cell(0, $h, '', $border, 1, $align, $fill);
-                    $pdf->SetX($pdf->lMargin);
-                    $currentPointerPosition = $pdf->lMargin;
+                    $pdf->SetX($pdf->getLeftMargin());
+                    $currentPointerPosition = $pdf->getLeftMargin();
                 }
                 else {
                     echo "<pre>";
@@ -1157,7 +1158,7 @@ class CustomPDFTables extends AbstractExternalModule
 
             // Update the pointer to the end of the current string part
             /*if ($lineCount === 2) {
-                $currentPointerPosition = $pdf->lMargin;
+                $currentPointerPosition = $pdf->getLeftMargin();
             }
             else {
                 $currentPointerPosition += $pdf->GetStringWidth($part['text']);
