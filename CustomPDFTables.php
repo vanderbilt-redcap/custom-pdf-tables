@@ -776,9 +776,9 @@ class CustomPDFTables extends AbstractExternalModule
         return call_user_func_array($logicCode, array());
     }
 
-    public static function addNewPage(PDF_MemImage $pdf) {
+    function addNewPage(PDF_MemImage $pdf) {
         global $Proj;
-        $module = new CustomPDFTables();
+
         //echo "Adding a new page<br/>";
         $pdf->AddPage("P", "A4");
         $pdf->SetY(-5);
@@ -796,7 +796,7 @@ class CustomPDFTables extends AbstractExternalModule
         $pdf->Cell(0,0,'Confidential',0,1,'L');
         $pdf->Cell(0,5,'Page '.$pdf->PageNo().($GLOBALS['project_encoding'] == 'chinese_utf8' ? '' : ' of {nb}'),0,1,'R');
         $pdf->SetFont('DejaVu','B',8);
-        $pdf->Cell(0,2,"Record ID ".$module->record_id." (".$module->event_arm.")",0,1,'R');
+        $pdf->Cell(0,2,"Record ID ".$this->record_id." (".$this->event_arm.")",0,1,'R');
         $pdf->image(APP_PATH_DOCROOT . "Resources/images/"."redcap-logo-small.png",176, 289, 24, 7);
         ## Return the y coordinate to start
         return 15;
