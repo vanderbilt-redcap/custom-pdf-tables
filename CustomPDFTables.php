@@ -335,7 +335,7 @@ class CustomPDFTables extends AbstractExternalModule
 
         foreach($recordData as $thisRecordData) {
             if ($currentY == 0) {
-                $currentY = self::addNewPage($pdf);
+                $currentY = self::addNewPage($pdf,$this->record_id,$this->event_arm);
                 $pdf->printText(10,$currentY,$formTitle,$headerFont);
             }
 
@@ -471,7 +471,7 @@ class CustomPDFTables extends AbstractExternalModule
                 //			$currentY = $pdf->printTableIfRoom(10,$currentY + 5,$headerArray,$thisTable["rows"],$currentStyle);
 
                 if(($currentY + 20) > $pdf->GetPageHeight()) {
-                    $currentY = -5 + self::addNewPage($pdf);
+                    $currentY = -5 + self::addNewPage($pdf,$this->record_id,$this->event_arm);
                 }
                 /*echo "Header array:<br/>";
                 echo "<pre>";
@@ -490,10 +490,10 @@ class CustomPDFTables extends AbstractExternalModule
                 print_r($thisTable['rows']);
                 echo "</pre>";*/
                 if (array_filter($thisTable['colors'])) {
-                    $currentY = $this->printColorTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf], $thisTable['colors']);
+                    $currentY = $this->printColorTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf,$this->record_id,$this->event_arm], $thisTable['colors']);
                 }
                 else {
-                    $currentY = $pdf->printTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf]);
+                    $currentY = $pdf->printTable(10, $currentY + 5, $headerArray, $thisTable["rows"], $currentStyle, "\\Vanderbilt\\CustomPDFTables\\CustomPDFTables::addNewPage", [$pdf,$this->record_id,$this->event_arm]);
                 }
             }
         }
@@ -506,7 +506,7 @@ class CustomPDFTables extends AbstractExternalModule
         //$pdf = new PDF_MemImage();
         $pdf->SetAutoPageBreak(false);
         $overflowFunction = "addNewPage";
-        $overflowParameters = [$pdf];
+        $overflowParameters = [$pdf,$this->record_id,$this->event_arm];
         $x = 10;
         /*echo "Table options:<br/>";
         echo "<pre>";
@@ -517,7 +517,7 @@ class CustomPDFTables extends AbstractExternalModule
             $currentColumn = 0;
             if ($currentY == 0) {
                 $headerFont = [$pdf::FONT_SIZE => 12,$pdf::FONT_COLOR => [127,0,0],$pdf::FONT_STYLE => "B", $pdf::FONT_NAME => "DejaVu", $pdf::FONT_ALIGN => 'C'];
-                $currentY = self::addNewPage($pdf);
+                $currentY = self::addNewPage($pdf,$this->record_id,$this->event_arm);
                 $pdf->printText(10,$currentY,$formTitle,$headerFont);
             }
 
@@ -537,211 +537,211 @@ class CustomPDFTables extends AbstractExternalModule
                 echo "</pre>";*/
                 //$tableData = $pdf->fitDataToColumnWidth($subSettings['table-settings']['table_body']['data'],$tableSettings);
 
-                    /*echo "TRow:<br/>";
-                    echo "<pre>";
-                    print_r($tRow);
-                    echo "</pre>";*/
-                    ## Stretch $tableData as need to fit into column widths
+                /*echo "TRow:<br/>";
+                echo "<pre>";
+                print_r($tRow);
+                echo "</pre>";*/
+                ## Stretch $tableData as need to fit into column widths
 
-                    //$tableData = $pdf->fitDataToColumnWidth($tRow['data'],$tableSettings);
+                //$tableData = $pdf->fitDataToColumnWidth($tRow['data'],$tableSettings);
 
-                    $rowToAdd = [];
-                    /*echo "My new tabledata:<br/>";
-                    echo "<pre>";
-                    print_r($tableData);
-                    echo "</pre>";*/
+                $rowToAdd = [];
+                /*echo "My new tabledata:<br/>";
+                echo "<pre>";
+                print_r($tableData);
+                echo "</pre>";*/
 
-                    for($i = 0; ($i <= max(array_keys($tableData)) || count($rowToAdd) > 0); $i++) {
-                        $alignmentArray = [];
-                        if ((!is_array($tableData[$i]) || empty($tableData[$i])) && count($rowToAdd) <= 0) continue;
+                for($i = 0; ($i <= max(array_keys($tableData)) || count($rowToAdd) > 0); $i++) {
+                    $alignmentArray = [];
+                    if ((!is_array($tableData[$i]) || empty($tableData[$i])) && count($rowToAdd) <= 0) continue;
 
-                        if (is_array($tableData[$i])) {
-                            for ($currentColumn = 0; $currentColumn < max(array(count($tableData[$i]))); $currentColumn++) {
-                                $alignmentArray[] = $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn] == "" ? 'J' : $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn];
-                            }
+                    if (is_array($tableData[$i])) {
+                        for ($currentColumn = 0; $currentColumn < max(array(count($tableData[$i]))); $currentColumn++) {
+                            $alignmentArray[] = $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn] == "" ? 'J' : $tableSettings[$pdf::FONT_ORIENTATION][$currentColumn];
                         }
-                        ## Sometimes new rows will be added in order to wrap cells onto multiple pages
-                        if(count($rowToAdd) > 0) {
+                    }
+                    ## Sometimes new rows will be added in order to wrap cells onto multiple pages
+                    if(count($rowToAdd) > 0) {
 //				error_log("Row to Add at $currentY: ".implode("||",$rowToAdd));
-                            $tableRow = $rowToAdd;
+                        $tableRow = $rowToAdd;
 //				$pdf->printText(0,5,"Starting overflow",[PDF_MemImage::FONT_SIZE => 9,PDF_MemImage::FONT_COLOR => [0,0,0],PDF_MemImage::FONT_NAME => "helvetica"]);
-                            $rowToAdd = [];
-                            $i--;
+                        $rowToAdd = [];
+                        $i--;
 
-                            $currentY = "";
-                            ## Wrap to new page when having a "rowToAdd"
-                            if($overflowFunction) {
-                                if($overflowParameters) {
-                                    $currentY = call_user_func($overflowFunction,$overflowParameters[0],$overflowParameters[1],$overflowParameters[2],
-                                        $overflowParameters[3],$overflowParameters[4],$overflowParameters[5]);
-                                }
-                                else {
-                                    $currentY = call_user_func($overflowFunction);
-                                }
+                        $currentY = "";
+                        ## Wrap to new page when having a "rowToAdd"
+                        if($overflowFunction) {
+                            if($overflowParameters) {
+                                $currentY = call_user_func($overflowFunction,$overflowParameters[0],$overflowParameters[1],$overflowParameters[2],
+                                    $overflowParameters[3],$overflowParameters[4],$overflowParameters[5]);
                             }
                             else {
-                                if($pdf->GetPageHeight() > 220) {
-                                    //$pdf->AddPage("P", "A4");
-                                    self::addNewPage($pdf);
-                                }
-                                else {
-                                    //$pdf->AddPage("L", "A4");
-                                    self::addNewPage($pdf);
-                                }
+                                $currentY = call_user_func($overflowFunction);
                             }
-                            if($currentY == "") {
-                                $currentY = 10;
-                            }
-                            $pdf->SetFillColor(255,255,255);
-                            $pdf->SetTextColor($tableSettings[$pdf::FONT_COLOR][0],$tableSettings[$pdf::FONT_COLOR][1],$tableSettings[$pdf::FONT_COLOR][2]);
-                            $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
-//				error_log("Wrapping from new row $currentY");
                         }
                         else {
-                            $tableRow = $this->br2nl($tableData[$i]);
-                            //$tableRow = $tableData[$i];
+                            if($pdf->GetPageHeight() > 220) {
+                                //$pdf->AddPage("P", "A4");
+                                self::addNewPage($pdf,$this->record_id,$this->event_arm);
+                            }
+                            else {
+                                //$pdf->AddPage("L", "A4");
+                                self::addNewPage($pdf,$this->record_id,$this->event_arm);
+                            }
                         }
-                        $currentX = $x;
-                        /*echo "<pre>";
-                        print_r($tableRow);
-                        echo "</pre>";*/
-                        foreach ($tableRow as $column => &$columnVal) {
-                            $maxWidth = $subSettings['table-settings']['table_body']['settings'][$i][$column][$pdf::TABLE_WIDTH_SETTINGS] - 4;
+                        if($currentY == "") {
+                            $currentY = 10;
+                        }
+                        $pdf->SetFillColor(255,255,255);
+                        $pdf->SetTextColor($tableSettings[$pdf::FONT_COLOR][0],$tableSettings[$pdf::FONT_COLOR][1],$tableSettings[$pdf::FONT_COLOR][2]);
+                        $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
+//				error_log("Wrapping from new row $currentY");
+                    }
+                    else {
+                        $tableRow = $this->br2nl($tableData[$i]);
+                        //$tableRow = $tableData[$i];
+                    }
+                    $currentX = $x;
+                    /*echo "<pre>";
+                    print_r($tableRow);
+                    echo "</pre>";*/
+                    foreach ($tableRow as $column => &$columnVal) {
+                        $maxWidth = $subSettings['table-settings']['table_body']['settings'][$i][$column][$pdf::TABLE_WIDTH_SETTINGS] - 4;
 
-                            $newString = $columnVal;
-                            $stringWidth = $pdf->GetStringWidth($newString);
+                        $newString = $columnVal;
+                        $stringWidth = $pdf->GetStringWidth($newString);
 
-                            if($stringWidth > $maxWidth) {
-                                $condensedString = "";
-                                $explodedString = explode("\n",$newString);
-                                $currentLine = "";
-                                foreach($explodedString as $thisKey => $thisLine) {
-                                    if($thisKey > 0) {
+                        if($stringWidth > $maxWidth) {
+                            $condensedString = "";
+                            $explodedString = explode("\n",$newString);
+                            $currentLine = "";
+                            foreach($explodedString as $thisKey => $thisLine) {
+                                if($thisKey > 0) {
+                                    $condensedString .= "\n";
+                                    $currentLine = "";
+                                }
+                                $explodedLine = explode(" ",$thisLine);
+                                foreach($explodedLine as $thisWord) {
+                                    if($pdf->GetStringWidth($currentLine.$thisWord." ") > $maxWidth) {
                                         $condensedString .= "\n";
                                         $currentLine = "";
                                     }
-                                    $explodedLine = explode(" ",$thisLine);
-                                    foreach($explodedLine as $thisWord) {
-                                        if($pdf->GetStringWidth($currentLine.$thisWord." ") > $maxWidth) {
-                                            $condensedString .= "\n";
-                                            $currentLine = "";
-                                        }
-                                        $currentLine .= $thisWord." ";
-                                        $condensedString .= $thisWord." ";
-                                    }
+                                    $currentLine .= $thisWord." ";
+                                    $condensedString .= $thisWord." ";
                                 }
-                                $newString = $condensedString;
                             }
-                            $columnVal = $newString;
+                            $newString = $condensedString;
                         }
+                        $columnVal = $newString;
+                    }
 
-                        $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
-                        $widthArray = $pdf->getColumnWidths($tableRow,$tableSettings);
+                    $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
+                    $widthArray = $pdf->getColumnWidths($tableRow,$tableSettings);
 
 //			error_log("Need to wrap? $currentY $maxHeight ~ ".$tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT]." > ".($pdf->GetPageHeight() - 10)."");
-                        ## If this row will exceed the remaining height in the page, but there's enough room to start the table, split the current row
-                        if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->GetPageHeight() - $currentY) && ($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
+                    ## If this row will exceed the remaining height in the page, but there's enough room to start the table, split the current row
+                    if($tableSettings[$pdf::WRAP_WITHIN_CELL_MIN_HEIGHT] < ($pdf->GetPageHeight() - $currentY) && ($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
 //				error_log("Splitting this thing");
 
+                        $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
+                    }
+
+                    ## If there's not enough room to print even part of this row, create new page and print it there.
+                    ## This will wrap onto another page if there still isn't enough room
+                    if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
+//				error_log("Wrapping");
+                        $currentY = "";
+                        if($overflowFunction) {
+                            if($overflowParameters) {
+                                $currentY = call_user_func($overflowFunction,$overflowParameters[0],$overflowParameters[1],$overflowParameters[2],
+                                    $overflowParameters[3],$overflowParameters[4],$overflowParameters[5]);
+                            }
+                            else {
+                                $currentY = call_user_func($overflowFunction);
+                            }
+                        }
+                        else {
+                            if($pdf->GetPageHeight() > 220) {
+                                //$pdf->AddPage("P", "A4");
+                                self::addNewPage($pdf,$this->record_id,$this->event_arm);
+                            }
+                            else {
+                                //$pdf->AddPage("L", "A4");
+                                self::addNewPage($pdf,$this->record_id,$this->event_arm);
+                            }
+                        }
+                        if($currentY == "") {
+                            $currentY = 10;
+                        }
+
+                        $pdf->SetFillColor(255,255,255);
+                        $pdf->SetTextColor($tableSettings[$pdf::FONT_COLOR][0],$tableSettings[$pdf::FONT_COLOR][1],$tableSettings[$pdf::FONT_COLOR][2]);
+                        $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
+
+                        ## Check if this single cell will overflow and attempt to wrap the text to another page
+                        if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
+                            $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->GetPageHeight() - 10 - $currentY));
+                            $tableRow = $splitRows[0];
+                            $rowToAdd = $splitRows[1];
                             $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
                         }
+                    }
+                    $currentColumn = 0;
+                    $columnWidthType = $pdf->rowSpecifiesColumnWidth($tableRow);
 
-                        ## If there's not enough room to print even part of this row, create new page and print it there.
-                        ## This will wrap onto another page if there still isn't enough room
-                        if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
-//				error_log("Wrapping");
-                            $currentY = "";
-                            if($overflowFunction) {
-                                if($overflowParameters) {
-                                    $currentY = call_user_func($overflowFunction,$overflowParameters[0],$overflowParameters[1],$overflowParameters[2],
-                                        $overflowParameters[3],$overflowParameters[4],$overflowParameters[5]);
-                                }
-                                else {
-                                    $currentY = call_user_func($overflowFunction);
-                                }
-                            }
-                            else {
-                                if($pdf->GetPageHeight() > 220) {
-                                    //$pdf->AddPage("P", "A4");
-                                    self::addNewPage($pdf);
-                                }
-                                else {
-                                    //$pdf->AddPage("L", "A4");
-                                    self::addNewPage($pdf);
-                                }
-                            }
-                            if($currentY == "") {
-                                $currentY = 10;
-                            }
+                    foreach($tableRow as $tableKey => $tableVal) {
+                        $pdf->SetY($currentY);
+                        $pdf->SetX($currentX);
 
-                            $pdf->SetFillColor(255,255,255);
-                            $pdf->SetTextColor($tableSettings[$pdf::FONT_COLOR][0],$tableSettings[$pdf::FONT_COLOR][1],$tableSettings[$pdf::FONT_COLOR][2]);
-                            $pdf->SetFont($tableSettings[$pdf::FONT_NAME],$tableSettings[$pdf::FONT_STYLE],$tableSettings[$pdf::FONT_SIZE]);
-
-                            ## Check if this single cell will overflow and attempt to wrap the text to another page
-                            if(($currentY + $maxHeight) > ($pdf->GetPageHeight() - 10)) {
-                                $splitRows = $pdf->splitRowByHeight($tableRow,$tableSettings,($pdf->GetPageHeight() - 10 - $currentY));
-                                $tableRow = $splitRows[0];
-                                $rowToAdd = $splitRows[1];
-                                $maxHeight = $pdf->getRowHeight($tableRow,$tableSettings);
-                            }
+                        $columnWidth = 1;
+                        if($columnWidthType) {
+                            $columnWidth = $tableVal;
+                            $tableVal = $tableKey;
                         }
-                        $currentColumn = 0;
-                        $columnWidthType = $pdf->rowSpecifiesColumnWidth($tableRow);
+                        //$cellWidth = $widthArray[$currentColumn + $columnWidth] - $widthArray[$currentColumn];
+                        $cellWidth = $subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::TABLE_WIDTH_SETTINGS];
 
-                        foreach($tableRow as $tableKey => $tableVal) {
+                        if(is_array($tableSettings[$pdf::NUMBER_DECIMALS])) {
+                            $thisDecimal = $tableSettings[$pdf::NUMBER_DECIMALS][$currentColumn];
+                        }
+                        else {
+                            $thisDecimal = $tableSettings[$pdf::NUMBER_DECIMALS];
+                        }
+
+                        ## Round the number based on required decimal places/turn to scientific notation is won't fit
+                        if(is_numeric($tableVal) && abs($tableVal) > 999999) {
+//					$origNumber = $tableVal;
+                            $tableVal = round($tableVal,(4-strlen(round($tableVal,0))));
+                            $tableVal = sprintf("%.3e",$tableVal);
+//					echo "Found large $origNumber => $tableVal <Br />";
+                        }
+                        else {
+                            $tableVal = (is_numeric($tableVal) && $thisDecimal !== $pdf::DECIMALS_MANUAL) ? number_format($tableVal,$thisDecimal) : $tableVal;
+                        }
+
+                        ## Then print the actual cell text second
+//				error_log("Printing: ".$tableVal);
+                        $pdf->SetFillColor($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][0],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][1],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][2]);
+                        $pdf->SetTextColor($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][0],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][1],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][2]);
+                        $pdf->SetFont($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_NAME],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_STYLE],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE]);
+                        /*echo "I'm printing out the cell for ".htmlspecialchars(json_encode($tableVal))."<br/>";
+                        echo "Width: ".$cellWidth.", Height: ".$maxHeight.", Orient: ".$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION]."<br/>";
+                        echo "Actual height: ".(($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1)."<br/>";*/
+                        $pdf->setCellMargin(0);
+                        $pdf->MultiCell($cellWidth,$maxHeight / (substr_count($tableVal,"\n") + 1),$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
+                        ## Print borders first if needed
+                        /*if($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]) {
+                            $pdf->MultiCell($cellWidth,$maxHeight,"",$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]);
                             $pdf->SetY($currentY);
                             $pdf->SetX($currentX);
+                        }*/
 
-                            $columnWidth = 1;
-                            if($columnWidthType) {
-                                $columnWidth = $tableVal;
-                                $tableVal = $tableKey;
-                            }
-                            //$cellWidth = $widthArray[$currentColumn + $columnWidth] - $widthArray[$currentColumn];
-                            $cellWidth = $subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::TABLE_WIDTH_SETTINGS];
-
-                            if(is_array($tableSettings[$pdf::NUMBER_DECIMALS])) {
-                                $thisDecimal = $tableSettings[$pdf::NUMBER_DECIMALS][$currentColumn];
-                            }
-                            else {
-                                $thisDecimal = $tableSettings[$pdf::NUMBER_DECIMALS];
-                            }
-
-                            ## Round the number based on required decimal places/turn to scientific notation is won't fit
-                            if(is_numeric($tableVal) && abs($tableVal) > 999999) {
-//					$origNumber = $tableVal;
-                                $tableVal = round($tableVal,(4-strlen(round($tableVal,0))));
-                                $tableVal = sprintf("%.3e",$tableVal);
-//					echo "Found large $origNumber => $tableVal <Br />";
-                            }
-                            else {
-                                $tableVal = (is_numeric($tableVal) && $thisDecimal !== $pdf::DECIMALS_MANUAL) ? number_format($tableVal,$thisDecimal) : $tableVal;
-                            }
-
-                            ## Then print the actual cell text second
-//				error_log("Printing: ".$tableVal);
-                            $pdf->SetFillColor($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][0],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][1],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$this::FILL_COLOR][2]);
-                            $pdf->SetTextColor($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][0],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][1],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_COLOR][2]);
-                            $pdf->SetFont($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_NAME],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_STYLE],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE]);
-                            /*echo "I'm printing out the cell for ".htmlspecialchars(json_encode($tableVal))."<br/>";
-                            echo "Width: ".$cellWidth.", Height: ".$maxHeight.", Orient: ".$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION]."<br/>";
-                            echo "Actual height: ".(($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_SIZE] / 2) + 1)."<br/>";*/
-                            $pdf->setCellMargin(0);
-                            $pdf->MultiCell($cellWidth,$maxHeight / (substr_count($tableVal,"\n") + 1),$tableVal,$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS],$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::FONT_ORIENTATION],true);
-                            ## Print borders first if needed
-                            /*if($subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]) {
-                                $pdf->MultiCell($cellWidth,$maxHeight,"",$subSettings['table-settings']['table_body']['settings'][$i][$currentColumn][$pdf::CELL_BORDERS]);
-                                $pdf->SetY($currentY);
-                                $pdf->SetX($currentX);
-                            }*/
-
-                            $currentX += $cellWidth;
-                            $currentColumn += $columnWidth;
-                        }
-                        $currentY += $maxHeight;
-                        //echo "Current custom table Y is $currentY with value $tableVal<br/>";
+                        $currentX += $cellWidth;
+                        $currentColumn += $columnWidth;
                     }
+                    $currentY += $maxHeight;
+                    //echo "Current custom table Y is $currentY with value $tableVal<br/>";
+                }
             }
         }
 
@@ -776,9 +776,8 @@ class CustomPDFTables extends AbstractExternalModule
         return call_user_func_array($logicCode, array());
     }
 
-    function addNewPage(PDF_MemImage $pdf) {
+    public static function addNewPage(PDF_MemImage $pdf,$record_id,$event_arm) {
         global $Proj;
-
         //echo "Adding a new page<br/>";
         $pdf->AddPage("P", "A4");
         $pdf->SetY(-5);
@@ -796,7 +795,7 @@ class CustomPDFTables extends AbstractExternalModule
         $pdf->Cell(0,0,'Confidential',0,1,'L');
         $pdf->Cell(0,5,'Page '.$pdf->PageNo().($GLOBALS['project_encoding'] == 'chinese_utf8' ? '' : ' of {nb}'),0,1,'R');
         $pdf->SetFont('DejaVu','B',8);
-        $pdf->Cell(0,2,"Record ID ".$this->record_id." (".$this->event_arm.")",0,1,'R');
+        $pdf->Cell(0,2,"Record ID ".$record_id." (".$event_arm.")",0,1,'R');
         $pdf->image(APP_PATH_DOCROOT . "Resources/images/"."redcap-logo-small.png",176, 289, 24, 7);
         ## Return the y coordinate to start
         return 15;
