@@ -287,7 +287,7 @@ class CustomPDFTables extends AbstractExternalModule
             foreach ($recordData as $record => &$this_record_data1) {
                 $calculatedCalcVal = \LogicTester::evaluateCondition(null, $this_record_data1, $funcName, $thisInstanceArgMap, null);
                 //echo "The calc value: $calculatedCalcVal<br/>";
-                foreach (parseEnum(strip_tags(label_decode($Proj->metadata[$thisInstanceArgMap[count($thisInstanceArgMap) - 1][1]]['element_enum']))) as $this_code => $this_choice) {
+                foreach (parseEnum(strip_tags(label_decode($Proj->metadata[$thisInstanceArgMap[count($thisInstanceArgMap ?? []) - 1][1]]['element_enum']))) as $this_code => $this_choice) {
                     if ($calculatedCalcVal === $this_code) {
                         $calculatedCalcVal = $this_choice;
                         break;
