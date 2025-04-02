@@ -118,7 +118,7 @@ class CustomPDFTables extends AbstractExternalModule
         $instrumentList = $this->getProjectSetting('form');
         $usersDisplay = $this->getProjectSetting('user-download');
 
-        $instrumentIndex = array_search($instrument,$instrumentList);
+        $instrumentIndex = array_search($instrument,$instrumentList ?? []);
 
         if (is_numeric($instrumentIndex) && (!isset($usersDisplay[$instrumentIndex]) || $usersDisplay[$instrumentIndex] == $user_rights['role_id'] || SUPER_USER)) {
             echo "<script>
@@ -143,7 +143,7 @@ class CustomPDFTables extends AbstractExternalModule
         $javaString = "";
         $instrumentList = $this->getProjectSetting('form');
 
-        if (in_array($instrument,$instrumentList)) {
+        if (in_array($instrument,$instrumentList ?? [])) {
             echo "<script>
                 jQuery(document).ready(function() {
                     var customPDFURL = encodeURI('$url');
@@ -274,7 +274,7 @@ class CustomPDFTables extends AbstractExternalModule
                         if ( // Is a valid repeating instrument?
                             ($repeat_instrument != '' && $thisInstanceArgFieldForm == $repeat_instrument && $Proj->isRepeatingForm($thisInstanceArgEventId, $thisInstanceArgFieldForm))
                             // Is a valid repeating event?
-                            || ($repeat_instrument == '' && $Proj->isRepeatingEvent($thisInstanceArgEventId) && in_array($thisInstanceArgFieldForm, $Proj->eventsForms[$thisInstanceArgEventId]))) {
+                            || ($repeat_instrument == '' && $Proj->isRepeatingEvent($thisInstanceArgEventId) && in_array($thisInstanceArgFieldForm, $Proj->eventsForms[$thisInstanceArgEventId] ?? []))) {
                             $theseArgs[3] = $repeat_instance;
                         }
                     }
@@ -763,7 +763,7 @@ class CustomPDFTables extends AbstractExternalModule
             return ($recordData[$matches[2]] == "" ? "''" : "'".$recordData[$matches[2]]."'");
         }, $branchingLogic);
         $newValue = preg_replace_callback("/(\\[)([a-z][a-z|_|0-9]*?)\\(([0-9a-zA-Z]+)\\)(\\])/", function ($matches) use ($recordData) {
-            return (in_array($matches[3], $recordData[$matches[2]]) ? "1" : "0");
+            return (in_array($matches[3], $recordData[$matches[2]] ?? []) ? "1" : "0");
         }, $newValue);
 
         $newValue = str_replace(" or ", ") || (", $newValue);
